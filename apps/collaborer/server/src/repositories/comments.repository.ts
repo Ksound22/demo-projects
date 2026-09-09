@@ -1,10 +1,10 @@
-import { db } from "../db/index.js";
-import type { Comment, CommentWithAuthor } from "../models/comment.model.js";
+import { db } from '../db/index.js';
+import type { Comment, CommentWithAuthor } from '../models/comment.model.js';
 
 const insertStmt = db.prepare(
-  "INSERT INTO comments (task_id, author_id, body) VALUES (?, ?, ?)",
+  'INSERT INTO comments (task_id, author_id, body) VALUES (?, ?, ?)'
 );
-const findByIdStmt = db.prepare("SELECT * FROM comments WHERE id = ?");
+const findByIdStmt = db.prepare('SELECT * FROM comments WHERE id = ?');
 
 const listByTaskStmt = db.prepare(`
   SELECT c.*, u.name AS author_name, u.avatar_url AS author_avatar_url
@@ -16,14 +16,14 @@ const listByTaskStmt = db.prepare(`
 `);
 
 const countByTaskStmt = db.prepare(
-  "SELECT COUNT(*) AS count FROM comments WHERE task_id = ?",
+  'SELECT COUNT(*) AS count FROM comments WHERE task_id = ?'
 );
 
 const updateStmt = db.prepare(
-  "UPDATE comments SET body = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ?",
+  "UPDATE comments SET body = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ?"
 );
 
-const deleteStmt = db.prepare("DELETE FROM comments WHERE id = ?");
+const deleteStmt = db.prepare('DELETE FROM comments WHERE id = ?');
 
 export const commentsRepository = {
   create(taskId: number, authorId: number, body: string): Comment {
@@ -38,7 +38,7 @@ export const commentsRepository = {
   listByTask(
     taskId: number,
     limit: number,
-    offset: number,
+    offset: number
   ): CommentWithAuthor[] {
     return listByTaskStmt.all(taskId, limit, offset) as CommentWithAuthor[];
   },
@@ -54,5 +54,5 @@ export const commentsRepository = {
 
   remove(id: number): void {
     deleteStmt.run(id);
-  },
+  }
 };

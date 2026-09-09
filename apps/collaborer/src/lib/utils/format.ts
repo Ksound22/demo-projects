@@ -1,15 +1,15 @@
 const relativeTimeFormatter = new Intl.RelativeTimeFormat(undefined, {
-  numeric: "auto",
+  numeric: 'auto'
 });
 
 const DIVISIONS: { amount: number; unit: Intl.RelativeTimeFormatUnit }[] = [
-  { amount: 60, unit: "seconds" },
-  { amount: 60, unit: "minutes" },
-  { amount: 24, unit: "hours" },
-  { amount: 7, unit: "days" },
-  { amount: 4.34524, unit: "weeks" },
-  { amount: 12, unit: "months" },
-  { amount: Number.POSITIVE_INFINITY, unit: "years" },
+  { amount: 60, unit: 'seconds' },
+  { amount: 60, unit: 'minutes' },
+  { amount: 24, unit: 'hours' },
+  { amount: 7, unit: 'days' },
+  { amount: 4.34524, unit: 'weeks' },
+  { amount: 12, unit: 'months' },
+  { amount: Number.POSITIVE_INFINITY, unit: 'years' }
 ];
 
 // Due dates/timestamps are stored in UTC (per the Edge Case Decisions doc) —
@@ -25,14 +25,14 @@ export function formatRelativeTime(isoDate: string): string {
     duration /= division.amount;
   }
 
-  return relativeTimeFormatter.format(Math.round(duration), "years");
+  return relativeTimeFormatter.format(Math.round(duration), 'years');
 }
 
 export function formatDate(isoDate: string): string {
   return new Date(isoDate).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
   });
 }
 
@@ -46,7 +46,7 @@ export function isOverdue(dueDateIso: string | null): boolean {
 // them rather than a lookup table per enum.
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
-  const units = ["KB", "MB", "GB"];
+  const units = ['KB', 'MB', 'GB'];
   let value = bytes / 1024;
   let unitIndex = 0;
   while (value >= 1024 && unitIndex < units.length - 1) {
@@ -58,7 +58,7 @@ export function formatFileSize(bytes: number): string {
 
 export function formatEnumLabel(value: string): string {
   return value
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }

@@ -1,10 +1,10 @@
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import express from "express";
-import helmet from "helmet";
-import { errorHandler } from "./middleware/error-handler.js";
-import { requestLogger } from "./middleware/request-logger.js";
-import { apiRouter } from "./routes/index.js";
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import helmet from 'helmet';
+import { errorHandler } from './middleware/error-handler.js';
+import { requestLogger } from './middleware/request-logger.js';
+import { apiRouter } from './routes/index.js';
 
 export const app = express();
 
@@ -19,10 +19,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(requestLogger);
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok' });
 });
 
-app.use("/api/v1", apiRouter);
+app.use('/api/v1', apiRouter);
 
 app.use(errorHandler);

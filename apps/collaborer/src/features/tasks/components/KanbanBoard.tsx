@@ -1,4 +1,4 @@
-import "./kanban.css";
+import './kanban.css';
 import {
   DndContext,
   DragOverlay,
@@ -6,23 +6,23 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
-  type DragStartEvent,
-} from "@dnd-kit/core";
-import { useCallback, useEffect, useState } from "react";
-import { Alert } from "../../../components/alert.js";
-import { useSession } from "../../../lib/auth/session.js";
-import { ProjectSocket } from "../../../lib/websocket/client.js";
-import { tasksApi } from "../api.js";
-import type { Task, TaskListItem, TaskStatus } from "../types.js";
-import { KanbanColumn } from "./KanbanColumn.js";
-import { TaskCardOverlay } from "./TaskCard.js";
+  type DragStartEvent
+} from '@dnd-kit/core';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert } from '../../../components/alert.js';
+import { useSession } from '../../../lib/auth/session.js';
+import { ProjectSocket } from '../../../lib/websocket/client.js';
+import { tasksApi } from '../api.js';
+import type { Task, TaskListItem, TaskStatus } from '../types.js';
+import { KanbanColumn } from './KanbanColumn.js';
+import { TaskCardOverlay } from './TaskCard.js';
 
 const COLUMNS: { status: TaskStatus; label: string }[] = [
-  { status: "backlog", label: "Backlog" },
-  { status: "todo", label: "Todo" },
-  { status: "in_progress", label: "In Progress" },
-  { status: "in_review", label: "In Review" },
-  { status: "done", label: "Done" },
+  { status: 'backlog', label: 'Backlog' },
+  { status: 'todo', label: 'Todo' },
+  { status: 'in_progress', label: 'In Progress' },
+  { status: 'in_review', label: 'In Review' },
+  { status: 'done', label: 'Done' }
 ];
 
 type KanbanBoardProps = {
@@ -40,7 +40,7 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
   // swallows plain clicks — this makes it wait for real movement first, so a
   // click-with-no-drag reaches the <a> untouched and navigates normally.
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
   const load = useCallback(() => {
@@ -48,10 +48,10 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
     tasksApi
       .listForProject(projectId)
       .then(setTasks)
-      .catch((err) =>
+      .catch(err =>
         setLoadError(
-          err instanceof Error ? err.message : "Failed to load tasks.",
-        ),
+          err instanceof Error ? err.message : 'Failed to load tasks.'
+        )
       );
   }, [projectId]);
 
@@ -62,38 +62,40 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
   // disconnected (there's no server-side event replay — see the client's docs).
   useEffect(() => {
     const socket = new ProjectSocket(projectId, {
-      onEvent: (event) => {
-        if (event.type !== "task.updated") return;
+      onEvent: event => {
+        if (event.type !== 'task.updated') return;
         const updated = event.data as Task;
         setTasks(
-          (prev) =>
-            prev?.map((task) =>
-              task.id === updated.id ? { ...task, ...updated } : task,
-            ) ?? prev,
+          prev =>
+            prev?.map(task =>
+              task.id === updated.id ? { ...task, ...updated } : task
+            ) ?? prev
         );
       },
-      onReconnect: load,
+      onReconnect: load
     });
     socket.connect();
     return () => socket.close();
   }, [projectId, load]);
 
-  if (session.status === "loading" || (!tasks && !loadError)) {
+  if (session.status === 'loading' || (!tasks && !loadError)) {
     return (
-      <p className="loading-state" role="status">
+      <p className='loading-state' role='status'>
         Loading…
       </p>
     );
   }
-  if (session.status === "unauthenticated") {
-    if (typeof window !== "undefined") {
-      window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+  if (session.status === 'unauthenticated') {
+    if (typeof window !== 'undefined') {
+      window.location.href = `/login?redirect=${encodeURIComponent(
+        window.location.pathname
+      )}`;
     }
     return <></>;
   }
   if (loadError) {
     return (
-      <p className="error-state" role="alert">
+      <p className='error-state' role='alert'>
         {loadError}
       </p>
     );
@@ -111,23 +113,23 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
     const newStatus = event.over?.id as TaskStatus | undefined;
     if (!newStatus) return;
 
-    const task = tasks!.find((item) => item.id === taskId);
+    const task = tasks!.find(item => item.id === taskId);
     if (!task || task.status === newStatus) return;
 
     const previousStatus = task.status;
-    setTasks((prev) =>
-      prev!.map((item) =>
-        item.id === taskId ? { ...item, status: newStatus } : item,
-      ),
+    setTasks(prev =>
+      prev!.map(item =>
+        item.id === taskId ? { ...item, status: newStatus } : item
+      )
     );
 
     tasksApi.update(taskId, { status: newStatus }).catch(() => {
-      setTasks((prev) =>
-        prev!.map((item) =>
-          item.id === taskId ? { ...item, status: previousStatus } : item,
-        ),
+      setTasks(prev =>
+        prev!.map(item =>
+          item.id === taskId ? { ...item, status: previousStatus } : item
+        )
       );
-      setActionError("Failed to move task. Please try again.");
+      setActionError('Failed to move task. Please try again.');
     });
   }
 
@@ -144,24 +146,24 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
         assignee_avatar_url: null,
         subtask_total: 0,
         subtask_completed: 0,
-        labels: [],
+        labels: []
       };
-      setTasks((prev) => [...(prev ?? []), newItem]);
+      setTasks(prev => [...(prev ?? []), newItem]);
     } catch (err) {
       setActionError(
-        err instanceof Error ? err.message : "Failed to create task.",
+        err instanceof Error ? err.message : 'Failed to create task.'
       );
     }
   }
 
   const activeTask =
     activeTaskId !== null
-      ? tasks.find((task) => task.id === activeTaskId)
+      ? tasks.find(task => task.id === activeTaskId)
       : undefined;
 
   return (
     <div>
-      <Alert variant="error">{actionError}</Alert>
+      <Alert variant='error'>{actionError}</Alert>
 
       <DndContext
         sensors={sensors}
@@ -169,14 +171,14 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
         onDragEnd={handleDragEnd}
         onDragCancel={() => setActiveTaskId(null)}
       >
-        <div className="kanban-board">
-          {COLUMNS.map((column) => (
+        <div className='kanban-board'>
+          {COLUMNS.map(column => (
             <KanbanColumn
               key={column.status}
               status={column.status}
               label={column.label}
-              tasks={tasks.filter((task) => task.status === column.status)}
-              onQuickAdd={(title) => handleQuickAdd(column.status, title)}
+              tasks={tasks.filter(task => task.status === column.status)}
+              onQuickAdd={title => handleQuickAdd(column.status, title)}
             />
           ))}
         </div>

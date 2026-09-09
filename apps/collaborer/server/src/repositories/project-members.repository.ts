@@ -1,14 +1,14 @@
-import { db } from "../db/index.js";
-import type { ProjectMemberWithUser } from "../models/project-member.model.js";
+import { db } from '../db/index.js';
+import type { ProjectMemberWithUser } from '../models/project-member.model.js';
 
 const findMembershipStmt = db.prepare(
-  "SELECT * FROM project_members WHERE project_id = ? AND user_id = ?",
+  'SELECT * FROM project_members WHERE project_id = ? AND user_id = ?'
 );
 const insertStmt = db.prepare(
-  "INSERT INTO project_members (project_id, user_id) VALUES (?, ?)",
+  'INSERT INTO project_members (project_id, user_id) VALUES (?, ?)'
 );
 const removeStmt = db.prepare(
-  "DELETE FROM project_members WHERE project_id = ? AND user_id = ?",
+  'DELETE FROM project_members WHERE project_id = ? AND user_id = ?'
 );
 
 const listStmt = db.prepare(`
@@ -43,5 +43,5 @@ export const projectMembersRepository = {
 
   list(projectId: number): ProjectMemberWithUser[] {
     return listStmt.all(projectId) as ProjectMemberWithUser[];
-  },
+  }
 };

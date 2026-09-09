@@ -1,13 +1,13 @@
 export type NotificationType =
-  | "organization_invitation"
-  | "organization_role_changed"
-  | "removed_from_organization"
-  | "added_to_project"
-  | "removed_from_project"
-  | "task_assigned"
-  | "task_status_changed"
-  | "mentioned_in_comment"
-  | "comment_added";
+  | 'organization_invitation'
+  | 'organization_role_changed'
+  | 'removed_from_organization'
+  | 'added_to_project'
+  | 'removed_from_project'
+  | 'task_assigned'
+  | 'task_status_changed'
+  | 'mentioned_in_comment'
+  | 'comment_added';
 
 export interface Notification {
   id: number;

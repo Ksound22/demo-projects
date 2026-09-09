@@ -1,5 +1,5 @@
-import { db } from "../db/index.js";
-import type { Subtask } from "../models/subtask.model.js";
+import { db } from '../db/index.js';
+import type { Subtask } from '../models/subtask.model.js';
 
 interface SubtaskRow {
   id: number;
@@ -11,16 +11,16 @@ interface SubtaskRow {
 }
 
 const insertStmt = db.prepare(
-  "INSERT INTO subtasks (task_id, title) VALUES (?, ?)",
+  'INSERT INTO subtasks (task_id, title) VALUES (?, ?)'
 );
-const findByIdStmt = db.prepare("SELECT * FROM subtasks WHERE id = ?");
+const findByIdStmt = db.prepare('SELECT * FROM subtasks WHERE id = ?');
 const listByTaskStmt = db.prepare(
-  "SELECT * FROM subtasks WHERE task_id = ? ORDER BY created_at ASC",
+  'SELECT * FROM subtasks WHERE task_id = ? ORDER BY created_at ASC'
 );
 const updateStmt = db.prepare(
-  "UPDATE subtasks SET title = ?, is_completed = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ?",
+  "UPDATE subtasks SET title = ?, is_completed = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ?"
 );
-const deleteStmt = db.prepare("DELETE FROM subtasks WHERE id = ?");
+const deleteStmt = db.prepare('DELETE FROM subtasks WHERE id = ?');
 
 function toSubtask(row: SubtaskRow): Subtask {
   return { ...row, is_completed: Boolean(row.is_completed) };
@@ -48,5 +48,5 @@ export const subtasksRepository = {
 
   remove(id: number): void {
     deleteStmt.run(id);
-  },
+  }
 };

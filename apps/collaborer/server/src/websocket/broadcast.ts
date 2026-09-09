@@ -1,7 +1,7 @@
-import type { Comment } from "../models/comment.model.js";
-import type { Task } from "../models/task.model.js";
-import { WS_EVENTS } from "./events.js";
-import { broadcastToProject } from "./server.js";
+import type { Comment } from '../models/comment.model.js';
+import type { Task } from '../models/task.model.js';
+import { WS_EVENTS } from './events.js';
+import { broadcastToProject } from './server.js';
 
 // Called by services *after* their db.transaction() has committed — never from
 // inside one — per the architecture doc's "persist important state before
@@ -15,7 +15,7 @@ export const broadcast = {
   commentCreated(projectId: number, taskId: number, comment: Comment): void {
     broadcastToProject(projectId, {
       type: WS_EVENTS.COMMENT_CREATED,
-      data: { taskId, comment },
+      data: { taskId, comment }
     });
-  },
+  }
 };

@@ -1,8 +1,8 @@
-import { activityRepository } from "../repositories/activity.repository.js";
+import { activityRepository } from '../repositories/activity.repository.js';
 import {
   buildPaginatedResult,
-  type PaginationParams,
-} from "../utils/pagination.js";
+  type PaginationParams
+} from '../utils/pagination.js';
 
 export const activityService = {
   // Called by other services as a side effect of the action being recorded —
@@ -24,7 +24,7 @@ export const activityService = {
       action: input.action,
       entityType: input.entityType,
       entityId: input.entityId,
-      metadata: input.metadata ?? {},
+      metadata: input.metadata ?? {}
     });
   },
 
@@ -32,9 +32,9 @@ export const activityService = {
     const activities = activityRepository.listByProject(
       projectId,
       pagination.limit,
-      pagination.offset,
+      pagination.offset
     );
     const total = activityRepository.countByProject(projectId);
     return buildPaginatedResult(activities, total, pagination);
-  },
+  }
 };

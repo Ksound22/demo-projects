@@ -1,69 +1,69 @@
-import { db } from "../db/index.js";
-import type { LabelRef } from "../models/label.model.js";
+import { db } from '../db/index.js';
+import type { LabelRef } from '../models/label.model.js';
 import type {
   Task,
   TaskAssignedToUser,
   TaskListItem,
   TaskPriority,
   TaskStatus,
-  TaskWithAssignee,
-} from "../models/task.model.js";
-import { attachmentsRepository } from "../repositories/attachments.repository.js";
-import { labelsRepository } from "../repositories/labels.repository.js";
-import { organizationMembersRepository } from "../repositories/organization-members.repository.js";
-import { projectMembersRepository } from "../repositories/project-members.repository.js";
-import { taskLabelsRepository } from "../repositories/task-labels.repository.js";
+  TaskWithAssignee
+} from '../models/task.model.js';
+import { attachmentsRepository } from '../repositories/attachments.repository.js';
+import { labelsRepository } from '../repositories/labels.repository.js';
+import { organizationMembersRepository } from '../repositories/organization-members.repository.js';
+import { projectMembersRepository } from '../repositories/project-members.repository.js';
+import { taskLabelsRepository } from '../repositories/task-labels.repository.js';
 import {
   tasksRepository,
   type SortOrder,
   type TaskFilters,
-  type TaskSortField,
-} from "../repositories/tasks.repository.js";
-import { storage } from "../storage/index.js";
-import { broadcast } from "../websocket/broadcast.js";
-import { activityService } from "./activity.service.js";
+  type TaskSortField
+} from '../repositories/tasks.repository.js';
+import { storage } from '../storage/index.js';
+import { broadcast } from '../websocket/broadcast.js';
+import { activityService } from './activity.service.js';
 import {
   BadRequestError,
   ConflictError,
-  NotFoundError,
-} from "../utils/errors.js";
+  NotFoundError
+} from '../utils/errors.js';
 import {
   buildPaginatedResult,
-  type PaginationParams,
-} from "../utils/pagination.js";
-import { notificationsService } from "./notifications.service.js";
+  type PaginationParams
+} from '../utils/pagination.js';
+import { notificationsService } from './notifications.service.js';
 
 function assertAssigneeHasProjectAccess(
   projectId: number,
   organizationId: number,
-  assigneeId: number,
+  assigneeId: number
 ): void {
   const membership = organizationMembersRepository.findMembership(
     organizationId,
-    assigneeId,
+    assigneeId
   );
   if (!membership) {
     throw new BadRequestError(
-      "INVALID_ASSIGNEE",
-      "The assignee must be a member of the organization.",
+      'INVALID_ASSIGNEE',
+      'The assignee must be a member of the organization.'
     );
   }
 
   const isOrgManager =
-    membership.role === "owner" || membership.role === "admin";
+    membership.role === 'owner' || membership.role === 'admin';
   if (
     !isOrgManager &&
     !projectMembersRepository.isMember(projectId, assigneeId)
   ) {
     throw new BadRequestError(
-      "INVALID_ASSIGNEE",
-      "The assignee must have access to this project.",
+      'INVALID_ASSIGNEE',
+      'The assignee must have access to this project.'
     );
   }
 }
 
 function attachLabels(rows: TaskWithAssignee[]): TaskListItem[] {
-  const labelRows = labelsRepository.listForTasks(rows.map((row) => row.id));
+  const labelRows = labelsRepository.listForTasks(rows.map(row => row.id));
   const byTask = new Map<number, LabelRef[]>();
 
   for (const { task_id, ...label } of labelRows) {
@@ -72,7 +72,7 @@ function attachLabels(rows: TaskWithAssignee[]): TaskListItem[] {
     byTask.set(task_id, list);
   }
 
-  return rows.map((row) => ({ ...row, labels: byTask.get(row.id) ?? [] }));
+  return rows.map(row => ({ ...row, labels: byTask.get(row.id) ?? [] }));
 }
 
 export const tasksService = {
@@ -87,13 +87,13 @@ export const tasksService = {
       priority?: TaskPriority;
       assigneeId?: number | null;
       dueDate?: string | null;
-    },
+    }
   ): Task {
     if (input.assigneeId) {
       assertAssigneeHasProjectAccess(
         projectId,
         organizationId,
-        input.assigneeId,
+        input.assigneeId
       );
     }
 
@@ -102,27 +102,27 @@ export const tasksService = {
         projectId,
         title: input.title,
         description: input.description ?? null,
-        status: input.status ?? "backlog",
-        priority: input.priority ?? "medium",
+        status: input.status ?? 'backlog',
+        priority: input.priority ?? 'medium',
         assigneeId: input.assigneeId ?? null,
         creatorId,
-        dueDate: input.dueDate ?? null,
+        dueDate: input.dueDate ?? null
       });
 
       activityService.record({
         organizationId,
         projectId,
         actorId: creatorId,
-        action: "task.created",
-        entityType: "task",
+        action: 'task.created',
+        entityType: 'task',
         entityId: task.id,
-        metadata: { title: task.title },
+        metadata: { title: task.title }
       });
 
       if (task.assignee_id && task.assignee_id !== creatorId) {
-        notificationsService.notify(task.assignee_id, "task_assigned", {
+        notificationsService.notify(task.assignee_id, 'task_assigned', {
           taskId: task.id,
-          taskTitle: task.title,
+          taskTitle: task.title
         });
       }
 
@@ -134,20 +134,20 @@ export const tasksService = {
     projectId: number,
     filters: TaskFilters,
     sort: { field: TaskSortField; order: SortOrder },
-    pagination: PaginationParams,
+    pagination: PaginationParams
   ) {
     const { rows, total } = tasksRepository.list(
       projectId,
       filters,
       sort,
-      pagination,
+      pagination
     );
     return buildPaginatedResult(attachLabels(rows), total, pagination);
   },
 
   getById(taskId: number): TaskListItem {
     const task = tasksRepository.findByIdWithAssignee(taskId);
-    if (!task) throw new NotFoundError("TASK_NOT_FOUND", "Task not found.");
+    if (!task) throw new NotFoundError('TASK_NOT_FOUND', 'Task not found.');
     return attachLabels([task])[0]!;
   },
 
@@ -163,21 +163,21 @@ export const tasksService = {
       priority?: TaskPriority;
       assigneeId?: number | null;
       dueDate?: string | null;
-    },
+    }
   ): Task {
     const existing = tasksRepository.findById(taskId);
-    if (!existing) throw new NotFoundError("TASK_NOT_FOUND", "Task not found.");
+    if (!existing) throw new NotFoundError('TASK_NOT_FOUND', 'Task not found.');
 
     if (input.assigneeId) {
       assertAssigneeHasProjectAccess(
         projectId,
         organizationId,
-        input.assigneeId,
+        input.assigneeId
       );
     }
 
     const statusChanged = Boolean(
-      input.status && input.status !== existing.status,
+      input.status && input.status !== existing.status
     );
 
     const updatedTask = db.transaction(() => {
@@ -193,8 +193,7 @@ export const tasksService = {
           input.assigneeId !== undefined
             ? input.assigneeId
             : existing.assignee_id,
-        dueDate:
-          input.dueDate !== undefined ? input.dueDate : existing.due_date,
+        dueDate: input.dueDate !== undefined ? input.dueDate : existing.due_date
       });
 
       if (input.status && input.status !== existing.status) {
@@ -202,25 +201,25 @@ export const tasksService = {
           organizationId,
           projectId,
           actorId,
-          action: "task.status_changed",
-          entityType: "task",
+          action: 'task.status_changed',
+          entityType: 'task',
           entityId: taskId,
           metadata: {
             title: existing.title,
             from: existing.status,
-            to: input.status,
-          },
+            to: input.status
+          }
         });
 
         if (existing.assignee_id && existing.assignee_id !== actorId) {
           notificationsService.notify(
             existing.assignee_id,
-            "task_status_changed",
+            'task_status_changed',
             {
               taskId,
               taskTitle: existing.title,
-              status: input.status,
-            },
+              status: input.status
+            }
           );
         }
       }
@@ -230,14 +229,14 @@ export const tasksService = {
           organizationId,
           projectId,
           actorId,
-          action: "task.priority_changed",
-          entityType: "task",
+          action: 'task.priority_changed',
+          entityType: 'task',
           entityId: taskId,
           metadata: {
             title: existing.title,
             from: existing.priority,
-            to: input.priority,
-          },
+            to: input.priority
+          }
         });
       }
 
@@ -249,16 +248,16 @@ export const tasksService = {
           organizationId,
           projectId,
           actorId,
-          action: "task.assigned",
-          entityType: "task",
+          action: 'task.assigned',
+          entityType: 'task',
           entityId: taskId,
-          metadata: { title: existing.title, assigneeId: input.assigneeId },
+          metadata: { title: existing.title, assigneeId: input.assigneeId }
         });
 
         if (input.assigneeId && input.assigneeId !== actorId) {
-          notificationsService.notify(input.assigneeId, "task_assigned", {
+          notificationsService.notify(input.assigneeId, 'task_assigned', {
             taskId,
-            taskTitle: existing.title,
+            taskTitle: existing.title
           });
         }
       }
@@ -280,7 +279,7 @@ export const tasksService = {
     const attachments = attachmentsRepository.listByTask(taskId);
     tasksRepository.remove(taskId);
     await Promise.all(
-      attachments.map((attachment) => storage.delete(attachment.storage_key)),
+      attachments.map(attachment => storage.delete(attachment.storage_key))
     );
   },
 
@@ -288,15 +287,15 @@ export const tasksService = {
     const label = labelsRepository.findById(labelId);
     if (!label || label.project_id !== projectId) {
       throw new NotFoundError(
-        "LABEL_NOT_FOUND",
-        "Label not found in this project.",
+        'LABEL_NOT_FOUND',
+        'Label not found in this project.'
       );
     }
 
     if (taskLabelsRepository.isAttached(taskId, labelId)) {
       throw new ConflictError(
-        "LABEL_ALREADY_ATTACHED",
-        "This label is already attached to the task.",
+        'LABEL_ALREADY_ATTACHED',
+        'This label is already attached to the task.'
       );
     }
 
@@ -310,11 +309,11 @@ export const tasksService = {
   detachLabel(taskId: number, labelId: number): void {
     if (!taskLabelsRepository.isAttached(taskId, labelId)) {
       throw new NotFoundError(
-        "LABEL_NOT_ATTACHED",
-        "This label is not attached to the task.",
+        'LABEL_NOT_ATTACHED',
+        'This label is not attached to the task.'
       );
     }
 
     taskLabelsRepository.detach(taskId, labelId);
-  },
+  }
 };

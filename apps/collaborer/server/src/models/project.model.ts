@@ -1,5 +1,9 @@
 export type ProjectStatus =
-  "planning" | "active" | "on_hold" | "completed" | "archived";
+  | 'planning'
+  | 'active'
+  | 'on_hold'
+  | 'completed'
+  | 'archived';
 
 export interface Project {
   id: number;

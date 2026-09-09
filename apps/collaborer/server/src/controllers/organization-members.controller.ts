@@ -1,15 +1,15 @@
-import type { Request, Response } from "express";
-import { organizationMembersService } from "../services/organization-members.service.js";
-import { NotFoundError } from "../utils/errors.js";
-import { getPaginationParams } from "../utils/pagination.js";
-import { changeRoleSchema } from "../validators/organization-members.validator.js";
+import type { Request, Response } from 'express';
+import { organizationMembersService } from '../services/organization-members.service.js';
+import { NotFoundError } from '../utils/errors.js';
+import { getPaginationParams } from '../utils/pagination.js';
+import { changeRoleSchema } from '../validators/organization-members.validator.js';
 
 function parseTargetUserId(req: Request): number {
   const targetUserId = Number(req.params.userId);
   if (!Number.isInteger(targetUserId)) {
     throw new NotFoundError(
-      "MEMBER_NOT_FOUND",
-      "This user is not a member of the organization.",
+      'MEMBER_NOT_FOUND',
+      'This user is not a member of the organization.'
     );
   }
   return targetUserId;
@@ -29,7 +29,7 @@ export const organizationMembersController = {
       req.user!.id,
       req.organizationRole!,
       targetUserId,
-      role,
+      role
     );
     res.status(204).send();
   },
@@ -39,8 +39,8 @@ export const organizationMembersController = {
     organizationMembersService.remove(
       req.organizationId!,
       req.user!.id,
-      targetUserId,
+      targetUserId
     );
     res.status(204).send();
-  },
+  }
 };

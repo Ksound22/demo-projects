@@ -1,8 +1,8 @@
-import { randomBytes } from "node:crypto";
-import jwt from "jsonwebtoken";
-import { env } from "../config/env.js";
+import { randomBytes } from 'node:crypto';
+import jwt from 'jsonwebtoken';
+import { env } from '../config/env.js';
 
-const SESSION_TOKEN_TTL = "7d";
+const SESSION_TOKEN_TTL = '7d';
 
 export interface SessionTokenPayload {
   userId: number;
@@ -19,5 +19,5 @@ export function verifySessionToken(token: string): SessionTokenPayload {
 // Opaque, single-use tokens for invitations and password resets (not JWTs —
 // these are looked up directly in the database, so they can be revoked/expired there).
 export function generateOpaqueToken(): string {
-  return randomBytes(32).toString("hex");
+  return randomBytes(32).toString('hex');
 }

@@ -1,5 +1,5 @@
-import { db } from "../db/index.js";
-import { runMigrations } from "../db/migrate.js";
+import { db } from '../db/index.js';
+import { runMigrations } from '../db/migrate.js';
 
 // Runs once per test file (in a beforeAll): the in-memory DB is created fresh
 // per file already, since vitest gives each test file its own module
@@ -16,14 +16,14 @@ export function resetTestDatabase(): void {
   const tables = (
     db
       .prepare(
-        "SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'schema_migrations'",
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'schema_migrations'"
       )
       .all() as { name: string }[]
-  ).map((row) => row.name);
+  ).map(row => row.name);
 
-  db.pragma("foreign_keys = OFF");
+  db.pragma('foreign_keys = OFF');
   for (const table of tables) {
     db.exec(`DELETE FROM "${table}";`);
   }
-  db.pragma("foreign_keys = ON");
+  db.pragma('foreign_keys = ON');
 }

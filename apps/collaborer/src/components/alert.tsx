@@ -1,10 +1,10 @@
-import "./form.css";
-import { useEffect, type ReactNode } from "react";
+import './form.css';
+import { useEffect, type ReactNode } from 'react';
 
 const AUTO_DISMISS_MS = 4000;
 
 type AlertProps = {
-  variant: "error" | "success";
+  variant: 'error' | 'success';
   children: ReactNode;
   // Only pass this for a transient banner shown alongside content that stays
   // on screen (e.g. "Saved." next to a form) — never for a message that's the
@@ -28,7 +28,7 @@ export function Alert({ variant, children, onDismiss }: AlertProps) {
   return (
     <div
       className={children ? `alert alert-${variant}` : undefined}
-      role={variant === "error" ? "alert" : "status"}
+      role={variant === 'error' ? 'alert' : 'status'}
     >
       {children}
     </div>

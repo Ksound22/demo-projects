@@ -1,11 +1,11 @@
-import { db } from "../db/index.js";
+import { db } from '../db/index.js';
 import type {
   Task,
   TaskAssignedToUser,
   TaskPriority,
   TaskStatus,
-  TaskWithAssignee,
-} from "../models/task.model.js";
+  TaskWithAssignee
+} from '../models/task.model.js';
 
 export interface TaskFilters {
   status?: TaskStatus;
@@ -17,17 +17,20 @@ export interface TaskFilters {
 }
 
 export type TaskSortField =
-  "created_at" | "updated_at" | "due_date" | "priority";
-export type SortOrder = "asc" | "desc";
+  | 'created_at'
+  | 'updated_at'
+  | 'due_date'
+  | 'priority';
+export type SortOrder = 'asc' | 'desc';
 
 const PRIORITY_RANK_SQL =
   "CASE t.priority WHEN 'urgent' THEN 4 WHEN 'high' THEN 3 WHEN 'medium' THEN 2 ELSE 1 END";
 
 const SORT_COLUMNS: Record<TaskSortField, string> = {
-  created_at: "t.created_at",
-  updated_at: "t.updated_at",
-  due_date: "t.due_date",
-  priority: PRIORITY_RANK_SQL,
+  created_at: 't.created_at',
+  updated_at: 't.updated_at',
+  due_date: 't.due_date',
+  priority: PRIORITY_RANK_SQL
 };
 
 const TASK_WITH_ASSIGNEE_SELECT = `
@@ -43,9 +46,9 @@ const insertStmt = db.prepare(`
   VALUES (@projectId, @title, @description, @status, @priority, @assigneeId, @creatorId, @dueDate)
 `);
 
-const findByIdStmt = db.prepare("SELECT * FROM tasks WHERE id = ?");
+const findByIdStmt = db.prepare('SELECT * FROM tasks WHERE id = ?');
 const findWithAssigneeStmt = db.prepare(
-  `${TASK_WITH_ASSIGNEE_SELECT} WHERE t.id = ?`,
+  `${TASK_WITH_ASSIGNEE_SELECT} WHERE t.id = ?`
 );
 
 const updateStmt = db.prepare(`
@@ -55,7 +58,7 @@ const updateStmt = db.prepare(`
   WHERE id = @id
 `);
 
-const deleteStmt = db.prepare("DELETE FROM tasks WHERE id = ?");
+const deleteStmt = db.prepare('DELETE FROM tasks WHERE id = ?');
 
 // Safe without a per-row access check: a user can only ever become assignee_id
 // on a task the assignment flow already verified they have project access to
@@ -74,39 +77,39 @@ const findAssignedToUserStmt = db.prepare(`
 
 function buildFilters(
   projectId: number,
-  filters: TaskFilters,
+  filters: TaskFilters
 ): { where: string; params: Record<string, unknown> } {
-  const conditions = ["t.project_id = @projectId"];
+  const conditions = ['t.project_id = @projectId'];
   const params: Record<string, unknown> = { projectId };
 
   if (filters.status) {
-    conditions.push("t.status = @status");
+    conditions.push('t.status = @status');
     params.status = filters.status;
   }
   if (filters.priority) {
-    conditions.push("t.priority = @priority");
+    conditions.push('t.priority = @priority');
     params.priority = filters.priority;
   }
   if (filters.assigneeId !== undefined) {
-    conditions.push("t.assignee_id = @assigneeId");
+    conditions.push('t.assignee_id = @assigneeId');
     params.assigneeId = filters.assigneeId;
   }
   if (filters.dueBefore) {
-    conditions.push("t.due_date IS NOT NULL AND t.due_date <= @dueBefore");
+    conditions.push('t.due_date IS NOT NULL AND t.due_date <= @dueBefore');
     params.dueBefore = filters.dueBefore;
   }
   if (filters.dueAfter) {
-    conditions.push("t.due_date IS NOT NULL AND t.due_date >= @dueAfter");
+    conditions.push('t.due_date IS NOT NULL AND t.due_date >= @dueAfter');
     params.dueAfter = filters.dueAfter;
   }
   if (filters.labelId !== undefined) {
     conditions.push(
-      "EXISTS (SELECT 1 FROM task_labels tl WHERE tl.task_id = t.id AND tl.label_id = @labelId)",
+      'EXISTS (SELECT 1 FROM task_labels tl WHERE tl.task_id = t.id AND tl.label_id = @labelId)'
     );
     params.labelId = filters.labelId;
   }
 
-  return { where: conditions.join(" AND "), params };
+  return { where: conditions.join(' AND '), params };
 }
 
 export const tasksRepository = {
@@ -138,23 +141,23 @@ export const tasksRepository = {
     projectId: number,
     filters: TaskFilters,
     sort: { field: TaskSortField; order: SortOrder },
-    pagination: { limit: number; offset: number },
+    pagination: { limit: number; offset: number }
   ): { rows: TaskWithAssignee[]; total: number } {
     const { where, params } = buildFilters(projectId, filters);
     const column = SORT_COLUMNS[sort.field];
-    const direction = sort.order === "asc" ? "ASC" : "DESC";
+    const direction = sort.order === 'asc' ? 'ASC' : 'DESC';
 
     const rows = db
       .prepare(
         `${TASK_WITH_ASSIGNEE_SELECT}
          WHERE ${where}
          ORDER BY ${column} ${direction}, t.id ${direction}
-         LIMIT @limit OFFSET @offset`,
+         LIMIT @limit OFFSET @offset`
       )
       .all({
         ...params,
         limit: pagination.limit,
-        offset: pagination.offset,
+        offset: pagination.offset
       }) as TaskWithAssignee[];
 
     const total = (
@@ -175,7 +178,7 @@ export const tasksRepository = {
       priority: TaskPriority;
       assigneeId: number | null;
       dueDate: string | null;
-    },
+    }
   ): Task {
     updateStmt.run({ id, ...input });
     return findByIdStmt.get(id) as Task;
@@ -187,5 +190,5 @@ export const tasksRepository = {
 
   findAssignedToUser(userId: number): TaskAssignedToUser[] {
     return findAssignedToUserStmt.all(userId) as TaskAssignedToUser[];
-  },
+  }
 };

@@ -1,9 +1,9 @@
-import type { Request, Response } from "express";
-import { projectsService } from "../services/projects.service.js";
+import type { Request, Response } from 'express';
+import { projectsService } from '../services/projects.service.js';
 import {
   createProjectSchema,
-  updateProjectSchema,
-} from "../validators/projects.validator.js";
+  updateProjectSchema
+} from '../validators/projects.validator.js';
 
 export const projectsController = {
   create(req: Request, res: Response): void {
@@ -11,7 +11,7 @@ export const projectsController = {
     const project = projectsService.create(
       req.organizationId!,
       req.user!.id,
-      input,
+      input
     );
     res.status(201).json({ data: project });
   },
@@ -20,7 +20,7 @@ export const projectsController = {
     const projects = projectsService.listForOrganization(
       req.organizationId!,
       req.user!.id,
-      req.organizationRole!,
+      req.organizationRole!
     );
     res.json({ data: projects });
   },
@@ -37,5 +37,5 @@ export const projectsController = {
   remove(req: Request, res: Response): void {
     projectsService.remove(req.projectId!);
     res.status(204).send();
-  },
+  }
 };

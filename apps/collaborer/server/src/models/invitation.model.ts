@@ -1,4 +1,4 @@
-export type InvitationRole = "admin" | "member";
+export type InvitationRole = 'admin' | 'member';
 
 export interface Invitation {
   id: number;

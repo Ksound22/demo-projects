@@ -1,9 +1,9 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from 'express';
 
 type AsyncRouteHandler = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => Promise<unknown>;
 
 // Express 5 already forwards rejected promises to the error handler, but wrapping

@@ -1,22 +1,22 @@
-import type { Request, Response } from "express";
-import { authService } from "../services/auth.service.js";
+import type { Request, Response } from 'express';
+import { authService } from '../services/auth.service.js';
 import {
   changePasswordSchema,
   forgotPasswordSchema,
   loginSchema,
   registerSchema,
-  resetPasswordSchema,
-} from "../validators/auth.validator.js";
+  resetPasswordSchema
+} from '../validators/auth.validator.js';
 
-const SESSION_COOKIE = "session";
+const SESSION_COOKIE = 'session';
 const SESSION_COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 function setSessionCookie(res: Response, token: string): void {
   res.cookie(SESSION_COOKIE, token, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: SESSION_COOKIE_MAX_AGE_MS,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: SESSION_COOKIE_MAX_AGE_MS
   });
 }
 
@@ -51,8 +51,8 @@ export const authController = {
     await authService.requestPasswordReset(input.email);
     res.status(202).json({
       data: {
-        message: "If that email is registered, a reset link has been sent.",
-      },
+        message: 'If that email is registered, a reset link has been sent.'
+      }
     });
   },
 
@@ -60,5 +60,5 @@ export const authController = {
     const input = resetPasswordSchema.parse(req.body);
     authService.resetPassword(input.token, input.newPassword);
     res.status(204).send();
-  },
+  }
 };

@@ -1,18 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 import {
   getStoredOrganizationId,
-  setStoredOrganizationId,
-} from "../../lib/organizations/current-org.js";
-import { useSession } from "../../lib/auth/session.js";
-import { organizationsApi } from "./api.js";
-import type { Organization, OrganizationRole } from "./types.js";
+  setStoredOrganizationId
+} from '../../lib/organizations/current-org.js';
+import { useSession } from '../../lib/auth/session.js';
+import { organizationsApi } from './api.js';
+import type { Organization, OrganizationRole } from './types.js';
 
 export type OrganizationsState =
-  | { status: "loading" }
-  | { status: "error"; message: string }
-  | { status: "empty"; refresh: () => void }
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'empty'; refresh: () => void }
   | {
-      status: "ready";
+      status: 'ready';
       organizations: Organization[];
       current: Organization;
       setCurrent: (id: number) => void;
@@ -24,7 +24,7 @@ export type OrganizationsState =
 // org — every request is explicitly scoped by :organizationId in the URL).
 export function useOrganizations(): OrganizationsState {
   const [organizations, setOrganizations] = useState<Organization[] | null>(
-    null,
+    null
   );
   const [error, setError] = useState<string | null>(null);
   const [currentId, setCurrentId] = useState<number | null>(null);
@@ -35,23 +35,19 @@ export function useOrganizations(): OrganizationsState {
 
     organizationsApi
       .listMine()
-      .then((orgs) => {
+      .then(orgs => {
         if (cancelled) return;
         setOrganizations(orgs);
-        setCurrentId((prev) => {
-          if (prev !== null && orgs.some((org) => org.id === prev)) return prev;
+        setCurrentId(prev => {
+          if (prev !== null && orgs.some(org => org.id === prev)) return prev;
           const stored = getStoredOrganizationId();
-          return (
-            orgs.find((org) => org.id === stored)?.id ?? orgs[0]?.id ?? null
-          );
+          return orgs.find(org => org.id === stored)?.id ?? orgs[0]?.id ?? null;
         });
       })
-      .catch((err) => {
+      .catch(err => {
         if (!cancelled)
           setError(
-            err instanceof Error
-              ? err.message
-              : "Failed to load organizations.",
+            err instanceof Error ? err.message : 'Failed to load organizations.'
           );
       });
 
@@ -65,28 +61,28 @@ export function useOrganizations(): OrganizationsState {
     setCurrentId(id);
   }, []);
 
-  const refresh = useCallback(() => setReloadToken((n) => n + 1), []);
+  const refresh = useCallback(() => setReloadToken(n => n + 1), []);
 
-  if (error) return { status: "error", message: error };
-  if (!organizations) return { status: "loading" };
-  if (organizations.length === 0) return { status: "empty", refresh };
+  if (error) return { status: 'error', message: error };
+  if (!organizations) return { status: 'loading' };
+  if (organizations.length === 0) return { status: 'empty', refresh };
 
   const current =
-    organizations.find((org) => org.id === currentId) ?? organizations[0]!;
+    organizations.find(org => org.id === currentId) ?? organizations[0]!;
 
-  return { status: "ready", organizations, current, setCurrent, refresh };
+  return { status: 'ready', organizations, current, setCurrent, refresh };
 }
 
 // The org-members list is the only place a role is ever exposed (the org list
 // endpoint itself doesn't carry it) — pages that need to gate an action on
 // "am I this org's admin/owner" derive it from there, same as MembersPage does.
 export function useMyOrganizationRole(
-  organizationId: number | null,
+  organizationId: number | null
 ): OrganizationRole | null {
   const session = useSession();
   const [role, setRole] = useState<OrganizationRole | null>(null);
 
-  const userId = session.status === "authenticated" ? session.user.id : null;
+  const userId = session.status === 'authenticated' ? session.user.id : null;
 
   useEffect(() => {
     if (organizationId === null || userId === null) return;
@@ -94,10 +90,10 @@ export function useMyOrganizationRole(
 
     organizationsApi
       .listMembers(organizationId)
-      .then((result) => {
+      .then(result => {
         if (cancelled) return;
         setRole(
-          result.data.find((member) => member.user_id === userId)?.role ?? null,
+          result.data.find(member => member.user_id === userId)?.role ?? null
         );
       })
       .catch(() => {

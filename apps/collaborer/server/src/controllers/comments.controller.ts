@@ -1,10 +1,10 @@
-import type { Request, Response } from "express";
-import { commentsService } from "../services/comments.service.js";
-import { getPaginationParams } from "../utils/pagination.js";
+import type { Request, Response } from 'express';
+import { commentsService } from '../services/comments.service.js';
+import { getPaginationParams } from '../utils/pagination.js';
 import {
   createCommentSchema,
-  updateCommentSchema,
-} from "../validators/comments.validator.js";
+  updateCommentSchema
+} from '../validators/comments.validator.js';
 
 export const commentsController = {
   create(req: Request, res: Response): void {
@@ -14,7 +14,7 @@ export const commentsController = {
       req.projectId!,
       req.organizationId!,
       req.user!.id,
-      body,
+      body
     );
     res.status(201).json({ data: comment });
   },
@@ -27,12 +27,12 @@ export const commentsController = {
   update(req: Request, res: Response): void {
     const { body } = updateCommentSchema.parse(req.body);
     res.json({
-      data: commentsService.update(req.commentId!, req.user!.id, body),
+      data: commentsService.update(req.commentId!, req.user!.id, body)
     });
   },
 
   remove(req: Request, res: Response): void {
     commentsService.remove(req.commentId!, req.user!.id);
     res.status(204).send();
-  },
+  }
 };

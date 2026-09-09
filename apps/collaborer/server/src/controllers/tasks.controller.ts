@@ -1,12 +1,12 @@
-import type { Request, Response } from "express";
-import { tasksService } from "../services/tasks.service.js";
-import { getPaginationParams } from "../utils/pagination.js";
-import { attachLabelSchema } from "../validators/labels.validator.js";
+import type { Request, Response } from 'express';
+import { tasksService } from '../services/tasks.service.js';
+import { getPaginationParams } from '../utils/pagination.js';
+import { attachLabelSchema } from '../validators/labels.validator.js';
 import {
   createTaskSchema,
   taskQuerySchema,
-  updateTaskSchema,
-} from "../validators/tasks.validator.js";
+  updateTaskSchema
+} from '../validators/tasks.validator.js';
 
 export const tasksController = {
   create(req: Request, res: Response): void {
@@ -15,7 +15,7 @@ export const tasksController = {
       req.projectId!,
       req.organizationId!,
       req.user!.id,
-      input,
+      input
     );
     res.status(201).json({ data: task });
   },
@@ -31,10 +31,10 @@ export const tasksController = {
         assigneeId: query.assigneeId,
         labelId: query.labelId,
         dueBefore: query.dueBefore,
-        dueAfter: query.dueAfter,
+        dueAfter: query.dueAfter
       },
       { field: query.sortBy, order: query.sortOrder },
-      pagination,
+      pagination
     );
     res.json(result);
   },
@@ -51,8 +51,8 @@ export const tasksController = {
         req.projectId!,
         req.organizationId!,
         req.user!.id,
-        input,
-      ),
+        input
+      )
     });
   },
 
@@ -71,5 +71,5 @@ export const tasksController = {
     const labelId = Number(req.params.labelId);
     tasksService.detachLabel(req.taskId!, labelId);
     res.status(204).send();
-  },
+  }
 };

@@ -1,14 +1,14 @@
-import { db } from "../db/index.js";
-import type { User } from "../models/user.model.js";
+import { db } from '../db/index.js';
+import type { User } from '../models/user.model.js';
 
 const insertUserStmt = db.prepare(`
   INSERT INTO users (email, username, password_hash, name)
   VALUES (@email, @username, @passwordHash, @name)
 `);
 
-const findByIdStmt = db.prepare("SELECT * FROM users WHERE id = ?");
-const findByEmailStmt = db.prepare("SELECT * FROM users WHERE email = ?");
-const findByUsernameStmt = db.prepare("SELECT * FROM users WHERE username = ?");
+const findByIdStmt = db.prepare('SELECT * FROM users WHERE id = ?');
+const findByEmailStmt = db.prepare('SELECT * FROM users WHERE email = ?');
+const findByUsernameStmt = db.prepare('SELECT * FROM users WHERE username = ?');
 
 const updateProfileStmt = db.prepare(`
   UPDATE users
@@ -21,7 +21,7 @@ const updatePasswordHashStmt = db.prepare(`
 `);
 
 const setResetTokenStmt = db.prepare(
-  "UPDATE users SET reset_token = ?, reset_token_expires_at = ? WHERE id = ?",
+  'UPDATE users SET reset_token = ?, reset_token_expires_at = ? WHERE id = ?'
 );
 
 const findByResetTokenStmt = db.prepare(`
@@ -29,7 +29,7 @@ const findByResetTokenStmt = db.prepare(`
 `);
 
 const clearResetTokenStmt = db.prepare(
-  "UPDATE users SET reset_token = NULL, reset_token_expires_at = NULL WHERE id = ?",
+  'UPDATE users SET reset_token = NULL, reset_token_expires_at = NULL WHERE id = ?'
 );
 
 export const usersRepository = {
@@ -57,7 +57,7 @@ export const usersRepository = {
 
   updateProfile(
     id: number,
-    input: { name: string; avatarUrl: string | null; bio: string | null },
+    input: { name: string; avatarUrl: string | null; bio: string | null }
   ): User {
     updateProfileStmt.run({ id, ...input });
     return findByIdStmt.get(id) as User;
@@ -77,5 +77,5 @@ export const usersRepository = {
 
   clearResetToken(id: number): void {
     clearResetTokenStmt.run(id);
-  },
+  }
 };

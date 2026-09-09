@@ -1,18 +1,18 @@
-import "./task-detail.css";
+import './task-detail.css';
 import {
   useCallback,
   useEffect,
   useRef,
   useState,
-  type ChangeEvent,
-} from "react";
-import { Alert } from "../../../components/alert.js";
-import { Button } from "../../../components/button.js";
-import { apiUrl, ApiError } from "../../../lib/api/client.js";
-import { useSession } from "../../../lib/auth/session.js";
-import { formatFileSize } from "../../../lib/utils/format.js";
-import { tasksApi } from "../api.js";
-import type { Attachment } from "../types.js";
+  type ChangeEvent
+} from 'react';
+import { Alert } from '../../../components/alert.js';
+import { Button } from '../../../components/button.js';
+import { apiUrl, ApiError } from '../../../lib/api/client.js';
+import { useSession } from '../../../lib/auth/session.js';
+import { formatFileSize } from '../../../lib/utils/format.js';
+import { tasksApi } from '../api.js';
+import type { Attachment } from '../types.js';
 
 type AttachmentListProps = {
   taskId: number;
@@ -29,10 +29,10 @@ export function AttachmentList({ taskId }: AttachmentListProps) {
     tasksApi
       .listAttachments(taskId)
       .then(setAttachments)
-      .catch((err) =>
+      .catch(err =>
         setError(
-          err instanceof Error ? err.message : "Failed to load attachments.",
-        ),
+          err instanceof Error ? err.message : 'Failed to load attachments.'
+        )
       );
   }, [taskId]);
 
@@ -47,22 +47,22 @@ export function AttachmentList({ taskId }: AttachmentListProps) {
 
     try {
       const attachment = await tasksApi.uploadAttachment(taskId, file);
-      setAttachments((prev) => [attachment, ...(prev ?? [])]);
+      setAttachments(prev => [attachment, ...(prev ?? [])]);
     } catch (err) {
       setError(
-        err instanceof ApiError ? err.message : "Failed to upload file.",
+        err instanceof ApiError ? err.message : 'Failed to upload file.'
       );
     } finally {
       setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   }
 
   async function handleRemove(attachmentId: number) {
     setError(null);
     const previous = attachments;
-    setAttachments((prev) =>
-      prev!.filter((attachment) => attachment.id !== attachmentId),
+    setAttachments(prev =>
+      prev!.filter(attachment => attachment.id !== attachmentId)
     );
 
     try {
@@ -70,43 +70,43 @@ export function AttachmentList({ taskId }: AttachmentListProps) {
     } catch (err) {
       setAttachments(previous);
       setError(
-        err instanceof ApiError ? err.message : "Failed to delete attachment.",
+        err instanceof ApiError ? err.message : 'Failed to delete attachment.'
       );
     }
   }
 
   const currentUserId =
-    session.status === "authenticated" ? session.user.id : null;
+    session.status === 'authenticated' ? session.user.id : null;
 
   return (
     <div>
       <h2>Attachments</h2>
 
-      <Alert variant="error">{error}</Alert>
+      <Alert variant='error'>{error}</Alert>
 
       {!attachments ? (
-        <p className="loading-state" role="status">
+        <p className='loading-state' role='status'>
           Loading…
         </p>
       ) : attachments.length === 0 ? (
-        <p className="empty-state">No attachments yet.</p>
+        <p className='empty-state'>No attachments yet.</p>
       ) : (
-        <ul className="attachment-list">
-          {attachments.map((attachment) => (
-            <li key={attachment.id} className="attachment-item">
+        <ul className='attachment-list'>
+          {attachments.map(attachment => (
+            <li key={attachment.id} className='attachment-item'>
               <a
                 href={apiUrl(`/attachments/${attachment.id}/download`)}
-                target="_blank"
-                rel="noreferrer"
+                target='_blank'
+                rel='noreferrer'
               >
                 {attachment.filename}
               </a>
-              <span className="list-item-meta">
+              <span className='list-item-meta'>
                 {formatFileSize(attachment.size)} · {attachment.uploader_name}
               </span>
               {attachment.uploaded_by === currentUserId && (
                 <Button
-                  variant="link"
+                  variant='link'
                   onClick={() => handleRemove(attachment.id)}
                   aria-label={`Delete ${attachment.filename}`}
                 >
@@ -118,19 +118,19 @@ export function AttachmentList({ taskId }: AttachmentListProps) {
         </ul>
       )}
 
-      <div className="form-field">
-        <label className="form-label" htmlFor="attachment-upload">
+      <div className='form-field'>
+        <label className='form-label' htmlFor='attachment-upload'>
           Upload a file
         </label>
         <input
-          id="attachment-upload"
+          id='attachment-upload'
           ref={fileInputRef}
-          type="file"
+          type='file'
           onChange={handleFileChange}
           disabled={uploading}
         />
-        <span className="loading-state" role="status">
-          {uploading ? "Uploading…" : ""}
+        <span className='loading-state' role='status'>
+          {uploading ? 'Uploading…' : ''}
         </span>
       </div>
     </div>

@@ -1,7 +1,7 @@
-import type { Request, Response } from "express";
-import { notificationsService } from "../services/notifications.service.js";
-import { getPaginationParams } from "../utils/pagination.js";
-import { NotFoundError } from "../utils/errors.js";
+import type { Request, Response } from 'express';
+import { notificationsService } from '../services/notifications.service.js';
+import { getPaginationParams } from '../utils/pagination.js';
+import { NotFoundError } from '../utils/errors.js';
 
 export const notificationsController = {
   list(req: Request, res: Response): void {
@@ -11,7 +11,7 @@ export const notificationsController = {
 
   unreadCount(req: Request, res: Response): void {
     res.json({
-      data: { count: notificationsService.unreadCount(req.user!.id) },
+      data: { count: notificationsService.unreadCount(req.user!.id) }
     });
   },
 
@@ -19,8 +19,8 @@ export const notificationsController = {
     const notificationId = Number(req.params.notificationId);
     if (!Number.isInteger(notificationId)) {
       throw new NotFoundError(
-        "NOTIFICATION_NOT_FOUND",
-        "Notification not found.",
+        'NOTIFICATION_NOT_FOUND',
+        'Notification not found.'
       );
     }
     notificationsService.markRead(notificationId, req.user!.id);
@@ -30,5 +30,5 @@ export const notificationsController = {
   markAllRead(req: Request, res: Response): void {
     notificationsService.markAllRead(req.user!.id);
     res.status(204).send();
-  },
+  }
 };

@@ -1,5 +1,5 @@
-import { Button } from "./button.js";
-import { Modal } from "./modal.js";
+import { Button } from './button.js';
+import { Modal } from './modal.js';
 
 type ConfirmDialogProps = {
   open: boolean;
@@ -15,19 +15,19 @@ export function ConfirmDialog({
   open,
   title,
   message,
-  confirmLabel = "Confirm",
+  confirmLabel = 'Confirm',
   danger,
   onConfirm,
-  onCancel,
+  onCancel
 }: ConfirmDialogProps) {
   return (
     <Modal open={open} onClose={onCancel} title={title}>
       <p>{message}</p>
-      <div className="form-actions">
-        <Button variant={danger ? "danger" : "primary"} onClick={onConfirm}>
+      <div className='form-actions'>
+        <Button variant={danger ? 'danger' : 'primary'} onClick={onConfirm}>
           {confirmLabel}
         </Button>
-        <Button variant="secondary" onClick={onCancel}>
+        <Button variant='secondary' onClick={onCancel}>
           Cancel
         </Button>
       </div>

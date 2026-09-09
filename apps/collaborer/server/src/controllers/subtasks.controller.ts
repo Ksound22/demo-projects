@@ -1,15 +1,15 @@
-import type { Request, Response } from "express";
-import { subtasksService } from "../services/subtasks.service.js";
-import { NotFoundError } from "../utils/errors.js";
+import type { Request, Response } from 'express';
+import { subtasksService } from '../services/subtasks.service.js';
+import { NotFoundError } from '../utils/errors.js';
 import {
   createSubtaskSchema,
-  updateSubtaskSchema,
-} from "../validators/subtasks.validator.js";
+  updateSubtaskSchema
+} from '../validators/subtasks.validator.js';
 
 function parseSubtaskId(req: Request): number {
   const subtaskId = Number(req.params.subtaskId);
   if (!Number.isInteger(subtaskId)) {
-    throw new NotFoundError("SUBTASK_NOT_FOUND", "Subtask not found.");
+    throw new NotFoundError('SUBTASK_NOT_FOUND', 'Subtask not found.');
   }
   return subtaskId;
 }
@@ -34,5 +34,5 @@ export const subtasksController = {
     const subtaskId = parseSubtaskId(req);
     subtasksService.remove(req.taskId!, subtaskId);
     res.status(204).send();
-  },
+  }
 };

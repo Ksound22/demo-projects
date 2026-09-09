@@ -1,7 +1,7 @@
-import { randomBytes } from "node:crypto";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { env } from "../config/env.js";
+import { randomBytes } from 'node:crypto';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { env } from '../config/env.js';
 
 const storageRoot = path.resolve(env.STORAGE_PATH);
 
@@ -13,7 +13,7 @@ function resolvePath(key: string): string {
     resolved !== storageRoot &&
     !resolved.startsWith(storageRoot + path.sep)
   ) {
-    throw new Error("Invalid storage key");
+    throw new Error('Invalid storage key');
   }
   return resolved;
 }
@@ -24,7 +24,7 @@ export const localStorage = {
   // which resolves the key server-side from the verified attachment row.
   generateKey(taskId: number, originalFilename: string): string {
     const ext = path.extname(originalFilename);
-    const random = randomBytes(16).toString("hex");
+    const random = randomBytes(16).toString('hex');
     return `tasks/${taskId}/${random}${ext}`;
   },
 
@@ -40,5 +40,5 @@ export const localStorage = {
 
   async delete(key: string): Promise<void> {
     await rm(resolvePath(key), { force: true });
-  },
+  }
 };

@@ -1,22 +1,22 @@
-import { Router } from "express";
-import { organizationMembersController } from "../controllers/organization-members.controller.js";
-import { requireOrganizationRole } from "../middleware/authorize.js";
+import { Router } from 'express';
+import { organizationMembersController } from '../controllers/organization-members.controller.js';
+import { requireOrganizationRole } from '../middleware/authorize.js';
 
 // Mounted at /organizations/:organizationId/members — mergeParams lets it see organizationId.
 export const organizationMembersRouter = Router({ mergeParams: true });
 
 organizationMembersRouter.get(
-  "/",
-  requireOrganizationRole("member"),
-  organizationMembersController.list,
+  '/',
+  requireOrganizationRole('member'),
+  organizationMembersController.list
 );
 organizationMembersRouter.patch(
-  "/:userId",
-  requireOrganizationRole("admin"),
-  organizationMembersController.changeRole,
+  '/:userId',
+  requireOrganizationRole('admin'),
+  organizationMembersController.changeRole
 );
 organizationMembersRouter.delete(
-  "/:userId",
-  requireOrganizationRole("admin"),
-  organizationMembersController.remove,
+  '/:userId',
+  requireOrganizationRole('admin'),
+  organizationMembersController.remove
 );

@@ -3,13 +3,13 @@
 // `?redirect=//evil.example` (protocol-relative) from turning a login/register
 // link into an open redirect.
 export function safeRedirectPath(
-  value: string | null | undefined,
+  value: string | null | undefined
 ): string | null {
   if (!value) return null;
   if (
-    !value.startsWith("/") ||
-    value.startsWith("//") ||
-    value.startsWith("/\\")
+    !value.startsWith('/') ||
+    value.startsWith('//') ||
+    value.startsWith('/\\')
   )
     return null;
   return value;

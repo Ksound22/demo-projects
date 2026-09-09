@@ -1,5 +1,5 @@
-import type { OrganizationRole } from "../models/organization-member.model.js";
-import type { User } from "../models/user.model.js";
+import type { OrganizationRole } from '../models/organization-member.model.js';
+import type { User } from '../models/user.model.js';
 
 declare global {
   namespace Express {

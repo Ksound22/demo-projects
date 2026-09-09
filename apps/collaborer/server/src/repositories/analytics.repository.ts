@@ -1,5 +1,5 @@
-import { db } from "../db/index.js";
-import type { TaskPriority, TaskStatus } from "../models/task.model.js";
+import { db } from '../db/index.js';
+import type { TaskPriority, TaskStatus } from '../models/task.model.js';
 
 interface StatusCountRow {
   status: TaskStatus;
@@ -42,7 +42,7 @@ const taskStatusCountsQuery = visibilityPair<StatusCountRow>(
    JOIN projects p ON p.id = t.project_id
    JOIN project_members pm ON pm.project_id = p.id AND pm.user_id = @userId
    WHERE p.organization_id = @organizationId
-   GROUP BY t.status`,
+   GROUP BY t.status`
 );
 
 const taskPriorityCountsQuery = visibilityPair<PriorityCountRow>(
@@ -54,7 +54,7 @@ const taskPriorityCountsQuery = visibilityPair<PriorityCountRow>(
    JOIN projects p ON p.id = t.project_id
    JOIN project_members pm ON pm.project_id = p.id AND pm.user_id = @userId
    WHERE p.organization_id = @organizationId
-   GROUP BY t.priority`,
+   GROUP BY t.priority`
 );
 
 const completionTimestampsQuery = visibilityPair<TimestampRow>(
@@ -70,7 +70,7 @@ const completionTimestampsQuery = visibilityPair<TimestampRow>(
    WHERE p.organization_id = @organizationId
      AND a.action = 'task.status_changed'
      AND json_extract(a.metadata, '$.to') = 'done'
-     AND a.created_at >= @since`,
+     AND a.created_at >= @since`
 );
 
 const activityTimestampsQuery = visibilityPair<TimestampRow>(
@@ -82,7 +82,7 @@ const activityTimestampsQuery = visibilityPair<TimestampRow>(
    JOIN projects p ON p.id = a.project_id
    JOIN project_members pm ON pm.project_id = p.id AND pm.user_id = @userId
    WHERE p.organization_id = @organizationId
-     AND a.created_at >= @since`,
+     AND a.created_at >= @since`
 );
 
 const overdueSplitQuery = visibilityPair<SplitCountRow>(
@@ -98,7 +98,7 @@ const overdueSplitQuery = visibilityPair<SplitCountRow>(
    FROM tasks t
    JOIN projects p ON p.id = t.project_id
    JOIN project_members pm ON pm.project_id = p.id AND pm.user_id = @userId
-   WHERE p.organization_id = @organizationId`,
+   WHERE p.organization_id = @organizationId`
 );
 
 const subtaskCompletionSplitQuery = visibilityPair<SplitCountRow>(
@@ -116,14 +116,14 @@ const subtaskCompletionSplitQuery = visibilityPair<SplitCountRow>(
    JOIN tasks t ON t.id = s.task_id
    JOIN projects p ON p.id = t.project_id
    JOIN project_members pm ON pm.project_id = p.id AND pm.user_id = @userId
-   WHERE p.organization_id = @organizationId`,
+   WHERE p.organization_id = @organizationId`
 );
 
 export const analyticsRepository = {
   taskStatusCounts(
     organizationId: number,
     userId: number,
-    isOrgManager: boolean,
+    isOrgManager: boolean
   ): StatusCountRow[] {
     return taskStatusCountsQuery({ organizationId, userId }, isOrgManager);
   },
@@ -131,7 +131,7 @@ export const analyticsRepository = {
   taskPriorityCounts(
     organizationId: number,
     userId: number,
-    isOrgManager: boolean,
+    isOrgManager: boolean
   ): PriorityCountRow[] {
     return taskPriorityCountsQuery({ organizationId, userId }, isOrgManager);
   },
@@ -140,31 +140,31 @@ export const analyticsRepository = {
     organizationId: number,
     userId: number,
     since: string,
-    isOrgManager: boolean,
+    isOrgManager: boolean
   ): string[] {
     return completionTimestampsQuery(
       { organizationId, userId, since },
-      isOrgManager,
-    ).map((row) => row.created_at);
+      isOrgManager
+    ).map(row => row.created_at);
   },
 
   activityTimestamps(
     organizationId: number,
     userId: number,
     since: string,
-    isOrgManager: boolean,
+    isOrgManager: boolean
   ): string[] {
     return activityTimestampsQuery(
       { organizationId, userId, since },
-      isOrgManager,
-    ).map((row) => row.created_at);
+      isOrgManager
+    ).map(row => row.created_at);
   },
 
   overdueSplit(
     organizationId: number,
     userId: number,
     now: string,
-    isOrgManager: boolean,
+    isOrgManager: boolean
   ): SplitCountRow {
     return overdueSplitQuery({ organizationId, userId, now }, isOrgManager)[0]!;
   },
@@ -172,11 +172,11 @@ export const analyticsRepository = {
   subtaskCompletionSplit(
     organizationId: number,
     userId: number,
-    isOrgManager: boolean,
+    isOrgManager: boolean
   ): SplitCountRow {
     return subtaskCompletionSplitQuery(
       { organizationId, userId },
-      isOrgManager,
+      isOrgManager
     )[0]!;
-  },
+  }
 };

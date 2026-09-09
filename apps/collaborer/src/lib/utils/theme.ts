@@ -1,15 +1,15 @@
-export type Theme = "dark" | "light";
+export type Theme = 'dark' | 'light';
 
-const THEME_STORAGE_KEY = "theme";
+const THEME_STORAGE_KEY = 'theme';
 
 const THEME_CLASS: Record<Theme, string> = {
-  dark: "dark-palette",
-  light: "light-palette",
+  dark: 'dark-palette',
+  light: 'light-palette'
 };
 
 export function getStoredTheme(): Theme {
   const stored = localStorage.getItem(THEME_STORAGE_KEY);
-  return stored === "light" ? "light" : "dark";
+  return stored === 'light' ? 'light' : 'dark';
 }
 
 export function setTheme(theme: Theme): void {

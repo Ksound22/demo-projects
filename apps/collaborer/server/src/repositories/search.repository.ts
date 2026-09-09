@@ -1,6 +1,6 @@
-import { db } from "../db/index.js";
-import type { Project } from "../models/project.model.js";
-import type { TaskWithAssignee } from "../models/task.model.js";
+import { db } from '../db/index.js';
+import type { Project } from '../models/project.model.js';
+import type { TaskWithAssignee } from '../models/task.model.js';
 
 const SEARCH_RESULT_LIMIT = 20;
 
@@ -56,7 +56,7 @@ const searchTasksAsMemberStmt = db.prepare(`
 // Escapes SQLite LIKE wildcards in user input so a literal "%" or "_" in a search
 // query doesn't get treated as a wildcard.
 function toLikePattern(query: string): string {
-  const escaped = query.replace(/[\\%_]/g, (char) => `\\${char}`);
+  const escaped = query.replace(/[\\%_]/g, char => `\\${char}`);
   return `%${escaped}%`;
 }
 
@@ -65,19 +65,19 @@ export const searchRepository = {
     organizationId: number,
     userId: number,
     isOrgManager: boolean,
-    query: string,
+    query: string
   ): Project[] {
     const pattern = toLikePattern(query);
     if (isOrgManager) {
       return searchProjectsAsManagerStmt.all({
         organizationId,
-        pattern,
+        pattern
       }) as Project[];
     }
     return searchProjectsAsMemberStmt.all({
       organizationId,
       userId,
-      pattern,
+      pattern
     }) as Project[];
   },
 
@@ -85,19 +85,19 @@ export const searchRepository = {
     organizationId: number,
     userId: number,
     isOrgManager: boolean,
-    query: string,
+    query: string
   ): TaskWithAssignee[] {
     const pattern = toLikePattern(query);
     if (isOrgManager) {
       return searchTasksAsManagerStmt.all({
         organizationId,
-        pattern,
+        pattern
       }) as TaskWithAssignee[];
     }
     return searchTasksAsMemberStmt.all({
       organizationId,
       userId,
-      pattern,
+      pattern
     }) as TaskWithAssignee[];
-  },
+  }
 };

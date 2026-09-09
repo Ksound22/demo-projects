@@ -1,5 +1,5 @@
-import { organizationMembersRepository } from "../repositories/organization-members.repository.js";
-import { projectMembersRepository } from "../repositories/project-members.repository.js";
+import { organizationMembersRepository } from '../repositories/organization-members.repository.js';
+import { projectMembersRepository } from '../repositories/project-members.repository.js';
 
 // Business-logic version of the "org manager implicit / plain member needs explicit
 // project membership" rule enforced by requireProjectViewAccess and friends in
@@ -9,15 +9,15 @@ import { projectMembersRepository } from "../repositories/project-members.reposi
 export function hasProjectAccess(
   projectId: number,
   organizationId: number,
-  userId: number,
+  userId: number
 ): boolean {
   const membership = organizationMembersRepository.findMembership(
     organizationId,
-    userId,
+    userId
   );
   if (!membership) return false;
 
   const isOrgManager =
-    membership.role === "owner" || membership.role === "admin";
+    membership.role === 'owner' || membership.role === 'admin';
   return isOrgManager || projectMembersRepository.isMember(projectId, userId);
 }

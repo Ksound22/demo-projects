@@ -1,7 +1,7 @@
-import { fileURLToPath } from "node:url";
-import express from "express";
-import { app } from "./app.js";
-import { attachWebSocketServer } from "./websocket/server.js";
+import { fileURLToPath } from 'node:url';
+import express from 'express';
+import { app } from './app.js';
+import { attachWebSocketServer } from './websocket/server.js';
 
 // The production entry point: unlike dev (this app on :4000, the Astro app
 // separately on :4321 via `pnpm dev` — see index.ts), the deploy target
@@ -18,9 +18,9 @@ import { attachWebSocketServer } from "./websocket/server.js";
 // error thrown while serving a real page falls back to Express's own
 // generic error handling instead of the API's JSON one — which is actually
 // the correct behavior for an HTML page request, not a gap.
-const clientDir = fileURLToPath(new URL("../../dist/client", import.meta.url));
+const clientDir = fileURLToPath(new URL('../../dist/client', import.meta.url));
 const astroEntryPath = fileURLToPath(
-  new URL("../../dist/server/entry.mjs", import.meta.url),
+  new URL('../../dist/server/entry.mjs', import.meta.url)
 );
 
 const port = Number(process.env.PORT) || 3000;

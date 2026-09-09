@@ -1,9 +1,9 @@
-import type { Request, Response } from "express";
-import { labelsService } from "../services/labels.service.js";
+import type { Request, Response } from 'express';
+import { labelsService } from '../services/labels.service.js';
 import {
   createLabelSchema,
-  updateLabelSchema,
-} from "../validators/labels.validator.js";
+  updateLabelSchema
+} from '../validators/labels.validator.js';
 
 export const labelsController = {
   create(req: Request, res: Response): void {
@@ -23,5 +23,5 @@ export const labelsController = {
   remove(req: Request, res: Response): void {
     labelsService.remove(req.labelId!);
     res.status(204).send();
-  },
+  }
 };

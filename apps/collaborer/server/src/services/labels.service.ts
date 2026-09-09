@@ -1,6 +1,6 @@
-import type { Label } from "../models/label.model.js";
-import { labelsRepository } from "../repositories/labels.repository.js";
-import { NotFoundError } from "../utils/errors.js";
+import type { Label } from '../models/label.model.js';
+import { labelsRepository } from '../repositories/labels.repository.js';
+import { NotFoundError } from '../utils/errors.js';
 
 export const labelsService = {
   create(projectId: number, input: { name: string; color: string }): Label {
@@ -14,16 +14,16 @@ export const labelsService = {
   update(labelId: number, input: { name?: string; color?: string }): Label {
     const existing = labelsRepository.findById(labelId);
     if (!existing)
-      throw new NotFoundError("LABEL_NOT_FOUND", "Label not found.");
+      throw new NotFoundError('LABEL_NOT_FOUND', 'Label not found.');
 
     return labelsRepository.update(
       labelId,
       input.name ?? existing.name,
-      input.color ?? existing.color,
+      input.color ?? existing.color
     );
   },
 
   remove(labelId: number): void {
     labelsRepository.remove(labelId);
-  },
+  }
 };

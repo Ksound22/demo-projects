@@ -1,15 +1,15 @@
-import { db } from "../db/index.js";
+import { db } from '../db/index.js';
 import type {
   Attachment,
-  AttachmentWithUploader,
-} from "../models/attachment.model.js";
+  AttachmentWithUploader
+} from '../models/attachment.model.js';
 
 const insertStmt = db.prepare(`
   INSERT INTO attachments (task_id, filename, storage_key, mime_type, size, uploaded_by)
   VALUES (@taskId, @filename, @storageKey, @mimeType, @size, @uploadedBy)
 `);
 
-const findByIdStmt = db.prepare("SELECT * FROM attachments WHERE id = ?");
+const findByIdStmt = db.prepare('SELECT * FROM attachments WHERE id = ?');
 
 const listByTaskStmt = db.prepare(`
   SELECT a.*, u.name AS uploader_name
@@ -19,7 +19,7 @@ const listByTaskStmt = db.prepare(`
   ORDER BY a.created_at DESC
 `);
 
-const deleteStmt = db.prepare("DELETE FROM attachments WHERE id = ?");
+const deleteStmt = db.prepare('DELETE FROM attachments WHERE id = ?');
 
 export const attachmentsRepository = {
   create(input: {
@@ -44,5 +44,5 @@ export const attachmentsRepository = {
 
   remove(id: number): void {
     deleteStmt.run(id);
-  },
+  }
 };

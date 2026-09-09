@@ -1,7 +1,7 @@
-import type { Request, Response } from "express";
-import type { Invitation } from "../models/invitation.model.js";
-import { invitationsService } from "../services/invitations.service.js";
-import { createInvitationSchema } from "../validators/invitations.validator.js";
+import type { Request, Response } from 'express';
+import type { Invitation } from '../models/invitation.model.js';
+import { invitationsService } from '../services/invitations.service.js';
+import { createInvitationSchema } from '../validators/invitations.validator.js';
 
 function toInvitationResponse(invitation: Invitation) {
   return {
@@ -10,7 +10,7 @@ function toInvitationResponse(invitation: Invitation) {
     role: invitation.role,
     token: invitation.token,
     expiresAt: invitation.expires_at,
-    createdAt: invitation.created_at,
+    createdAt: invitation.created_at
   };
 }
 
@@ -20,7 +20,7 @@ export const invitationsController = {
     const invitation = await invitationsService.create(
       req.organizationId!,
       req.user!.id,
-      input,
+      input
     );
     res.status(201).json({ data: toInvitationResponse(invitation) });
   },
@@ -39,5 +39,5 @@ export const invitationsController = {
   accept(req: Request, res: Response): void {
     invitationsService.accept(String(req.params.token), req.user!.id);
     res.status(204).send();
-  },
+  }
 };

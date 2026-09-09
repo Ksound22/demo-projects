@@ -14,7 +14,7 @@ export interface User {
 
 export type PublicUser = Omit<
   User,
-  "password_hash" | "reset_token" | "reset_token_expires_at"
+  'password_hash' | 'reset_token' | 'reset_token_expires_at'
 >;
 
 export function toPublicUser(user: User): PublicUser {

@@ -1,5 +1,5 @@
-import { db } from "../db/index.js";
-import type { Activity } from "../models/activity.model.js";
+import { db } from '../db/index.js';
+import type { Activity } from '../models/activity.model.js';
 
 interface ActivityRow {
   id: number;
@@ -29,13 +29,13 @@ const listByProjectStmt = db.prepare(`
 `);
 
 const countByProjectStmt = db.prepare(
-  "SELECT COUNT(*) AS count FROM activities WHERE project_id = ?",
+  'SELECT COUNT(*) AS count FROM activities WHERE project_id = ?'
 );
 
 function toActivity(row: ActivityRow): Activity {
   return {
     ...row,
-    metadata: JSON.parse(row.metadata) as Record<string, unknown>,
+    metadata: JSON.parse(row.metadata) as Record<string, unknown>
   };
 }
 
@@ -56,7 +56,7 @@ export const activityRepository = {
       action: input.action,
       entityType: input.entityType,
       entityId: input.entityId,
-      metadata: JSON.stringify(input.metadata),
+      metadata: JSON.stringify(input.metadata)
     });
   },
 
@@ -68,5 +68,5 @@ export const activityRepository = {
 
   countByProject(projectId: number): number {
     return (countByProjectStmt.get(projectId) as { count: number }).count;
-  },
+  }
 };

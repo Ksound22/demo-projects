@@ -1,12 +1,12 @@
-import { db } from "../db/index.js";
+import { db } from '../db/index.js';
 import type {
   OrganizationMember,
   OrganizationMemberWithUser,
-  OrganizationRole,
-} from "../models/organization-member.model.js";
+  OrganizationRole
+} from '../models/organization-member.model.js';
 
 const findMembershipStmt = db.prepare(
-  "SELECT * FROM organization_members WHERE organization_id = ? AND user_id = ?",
+  'SELECT * FROM organization_members WHERE organization_id = ? AND user_id = ?'
 );
 
 const findByEmailStmt = db.prepare(`
@@ -25,17 +25,17 @@ const listStmt = db.prepare(`
 `);
 
 const countStmt = db.prepare(
-  "SELECT COUNT(*) AS count FROM organization_members WHERE organization_id = ?",
+  'SELECT COUNT(*) AS count FROM organization_members WHERE organization_id = ?'
 );
 
 const insertStmt = db.prepare(
-  "INSERT INTO organization_members (organization_id, user_id, role) VALUES (?, ?, ?)",
+  'INSERT INTO organization_members (organization_id, user_id, role) VALUES (?, ?, ?)'
 );
 const updateRoleStmt = db.prepare(
-  "UPDATE organization_members SET role = ? WHERE organization_id = ? AND user_id = ?",
+  'UPDATE organization_members SET role = ? WHERE organization_id = ? AND user_id = ?'
 );
 const removeStmt = db.prepare(
-  "DELETE FROM organization_members WHERE organization_id = ? AND user_id = ?",
+  'DELETE FROM organization_members WHERE organization_id = ? AND user_id = ?'
 );
 
 // Cleanup for the "member removed from org" edge case: unassign their tasks and drop
@@ -53,29 +53,31 @@ const unassignTasksInOrgStmt = db.prepare(`
 export const organizationMembersRepository = {
   findMembership(
     organizationId: number,
-    userId: number,
+    userId: number
   ): OrganizationMember | undefined {
     return findMembershipStmt.get(organizationId, userId) as
-      OrganizationMember | undefined;
+      | OrganizationMember
+      | undefined;
   },
 
   findByEmail(
     organizationId: number,
-    email: string,
+    email: string
   ): OrganizationMember | undefined {
     return findByEmailStmt.get(organizationId, email) as
-      OrganizationMember | undefined;
+      | OrganizationMember
+      | undefined;
   },
 
   list(
     organizationId: number,
     limit: number,
-    offset: number,
+    offset: number
   ): OrganizationMemberWithUser[] {
     return listStmt.all(
       organizationId,
       limit,
-      offset,
+      offset
     ) as OrganizationMemberWithUser[];
   },
 
@@ -90,7 +92,7 @@ export const organizationMembersRepository = {
   updateRole(
     organizationId: number,
     userId: number,
-    role: OrganizationRole,
+    role: OrganizationRole
   ): void {
     updateRoleStmt.run(role, organizationId, userId);
   },
@@ -101,5 +103,5 @@ export const organizationMembersRepository = {
       removeProjectMembershipsInOrgStmt.run(userId, organizationId);
       unassignTasksInOrgStmt.run(userId, organizationId);
     })();
-  },
+  }
 };

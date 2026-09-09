@@ -1,4 +1,4 @@
-import type { TaskPriority, TaskStatus } from "../tasks/types.js";
+import type { TaskPriority, TaskStatus } from '../tasks/types.js';
 
 export interface WeeklyCount {
   weekStart: string;

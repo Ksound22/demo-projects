@@ -1,12 +1,12 @@
-import type { NextFunction, Request, Response } from "express";
-import { usersRepository } from "../repositories/users.repository.js";
-import { UnauthorizedError } from "../utils/errors.js";
-import { verifySessionToken } from "../utils/tokens.js";
+import type { NextFunction, Request, Response } from 'express';
+import { usersRepository } from '../repositories/users.repository.js';
+import { UnauthorizedError } from '../utils/errors.js';
+import { verifySessionToken } from '../utils/tokens.js';
 
 export function authenticate(
   req: Request,
   _res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void {
   const token = req.cookies?.session as string | undefined;
 
@@ -19,7 +19,7 @@ export function authenticate(
     userId = verifySessionToken(token).userId;
   } catch {
     throw new UnauthorizedError(
-      "Your session has expired. Please log in again.",
+      'Your session has expired. Please log in again.'
     );
   }
 

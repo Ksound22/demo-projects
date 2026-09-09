@@ -1,4 +1,4 @@
-import { apiFetch, type PaginatedResult } from "../../lib/api/client.js";
+import { apiFetch, type PaginatedResult } from '../../lib/api/client.js';
 import type {
   Activity,
   CreateLabelInput,
@@ -6,34 +6,34 @@ import type {
   Label,
   Project,
   ProjectMember,
-  UpdateProjectInput,
-} from "./types.js";
+  UpdateProjectInput
+} from './types.js';
 
 export const projectsApi = {
   async listForOrganization(organizationId: number): Promise<Project[]> {
     const { data } = await apiFetch<{ data: Project[] }>(
-      `/organizations/${organizationId}/projects`,
+      `/organizations/${organizationId}/projects`
     );
     return data;
   },
 
   async create(
     organizationId: number,
-    input: CreateProjectInput,
+    input: CreateProjectInput
   ): Promise<Project> {
     const { data } = await apiFetch<{ data: Project }>(
       `/organizations/${organizationId}/projects`,
       {
-        method: "POST",
-        body: input,
-      },
+        method: 'POST',
+        body: input
+      }
     );
     return data;
   },
 
   async getById(projectId: number): Promise<Project> {
     const { data } = await apiFetch<{ data: Project }>(
-      `/projects/${projectId}`,
+      `/projects/${projectId}`
     );
     return data;
   },
@@ -41,62 +41,62 @@ export const projectsApi = {
   async update(projectId: number, input: UpdateProjectInput): Promise<Project> {
     const { data } = await apiFetch<{ data: Project }>(
       `/projects/${projectId}`,
-      { method: "PATCH", body: input },
+      { method: 'PATCH', body: input }
     );
     return data;
   },
 
   remove(projectId: number): Promise<void> {
-    return apiFetch<void>(`/projects/${projectId}`, { method: "DELETE" });
+    return apiFetch<void>(`/projects/${projectId}`, { method: 'DELETE' });
   },
 
   async listMembers(projectId: number): Promise<ProjectMember[]> {
     const { data } = await apiFetch<{ data: ProjectMember[] }>(
-      `/projects/${projectId}/members`,
+      `/projects/${projectId}/members`
     );
     return data;
   },
 
   addMember(projectId: number, userId: number): Promise<void> {
     return apiFetch<void>(`/projects/${projectId}/members`, {
-      method: "POST",
-      body: { userId },
+      method: 'POST',
+      body: { userId }
     });
   },
 
   removeMember(projectId: number, userId: number): Promise<void> {
     return apiFetch<void>(`/projects/${projectId}/members/${userId}`, {
-      method: "DELETE",
+      method: 'DELETE'
     });
   },
 
   listActivity(
     projectId: number,
-    page = 1,
+    page = 1
   ): Promise<PaginatedResult<Activity>> {
     return apiFetch<PaginatedResult<Activity>>(
-      `/projects/${projectId}/activity?page=${page}`,
+      `/projects/${projectId}/activity?page=${page}`
     );
   },
 
   async listLabels(projectId: number): Promise<Label[]> {
     const { data } = await apiFetch<{ data: Label[] }>(
-      `/projects/${projectId}/labels`,
+      `/projects/${projectId}/labels`
     );
     return data;
   },
 
   async createLabel(
     projectId: number,
-    input: CreateLabelInput,
+    input: CreateLabelInput
   ): Promise<Label> {
     const { data } = await apiFetch<{ data: Label }>(
       `/projects/${projectId}/labels`,
       {
-        method: "POST",
-        body: input,
-      },
+        method: 'POST',
+        body: input
+      }
     );
     return data;
-  },
+  }
 };

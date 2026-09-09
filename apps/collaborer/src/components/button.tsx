@@ -1,32 +1,32 @@
-import "./button.css";
-import type { MouseEventHandler, ReactNode } from "react";
+import './button.css';
+import type { MouseEventHandler, ReactNode } from 'react';
 
-type ButtonVariant = "primary" | "secondary" | "danger" | "link";
-type ButtonSize = "lg";
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'link';
+type ButtonSize = 'lg';
 
 type ButtonProps = {
   variant?: ButtonVariant;
   size?: ButtonSize;
   href?: string;
-  type?: "button" | "submit";
+  type?: 'button' | 'submit';
   disabled?: boolean;
   onClick?: MouseEventHandler;
   children: ReactNode;
   // For repeated actions whose visible text is generic across rows (e.g. a
   // "Remove" button in every row of a list) — gives each one a distinct
   // accessible name. Must contain the visible text (SC 2.5.3 Label in Name).
-  "aria-label"?: string;
+  'aria-label'?: string;
 };
 
 export function Button({
-  variant = "secondary",
+  variant = 'secondary',
   size,
   href,
-  type = "button",
+  type = 'button',
   disabled = false,
   onClick,
   children,
-  "aria-label": ariaLabel,
+  'aria-label': ariaLabel
 }: ButtonProps) {
   const className = size
     ? `btn btn-${variant} btn-${size}`
@@ -43,7 +43,7 @@ export function Button({
         className={className}
         aria-disabled={disabled || undefined}
         aria-label={ariaLabel}
-        onClick={(event) => {
+        onClick={event => {
           if (disabled) {
             event.preventDefault();
             return;

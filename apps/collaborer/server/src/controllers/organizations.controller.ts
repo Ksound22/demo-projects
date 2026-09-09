@@ -1,9 +1,9 @@
-import type { Request, Response } from "express";
-import { organizationsService } from "../services/organizations.service.js";
+import type { Request, Response } from 'express';
+import { organizationsService } from '../services/organizations.service.js';
 import {
   createOrganizationSchema,
-  updateOrganizationSchema,
-} from "../validators/organizations.validator.js";
+  updateOrganizationSchema
+} from '../validators/organizations.validator.js';
 
 export const organizationsController = {
   create(req: Request, res: Response): void {
@@ -28,5 +28,5 @@ export const organizationsController = {
   remove(req: Request, res: Response): void {
     organizationsService.remove(req.organizationId!);
     res.status(204).send();
-  },
+  }
 };

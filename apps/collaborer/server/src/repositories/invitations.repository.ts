@@ -1,24 +1,24 @@
-import { db } from "../db/index.js";
-import type { Invitation, InvitationRole } from "../models/invitation.model.js";
+import { db } from '../db/index.js';
+import type { Invitation, InvitationRole } from '../models/invitation.model.js';
 
 const insertStmt = db.prepare(`
   INSERT INTO invitations (organization_id, email, role, token, invited_by, expires_at)
   VALUES (@organizationId, @email, @role, @token, @invitedBy, @expiresAt)
 `);
 
-const findByIdStmt = db.prepare("SELECT * FROM invitations WHERE id = ?");
-const findByTokenStmt = db.prepare("SELECT * FROM invitations WHERE token = ?");
+const findByIdStmt = db.prepare('SELECT * FROM invitations WHERE id = ?');
+const findByTokenStmt = db.prepare('SELECT * FROM invitations WHERE token = ?');
 
 const findPendingByOrgAndEmailStmt = db.prepare(
-  "SELECT * FROM invitations WHERE organization_id = ? AND email = ? AND accepted_at IS NULL",
+  'SELECT * FROM invitations WHERE organization_id = ? AND email = ? AND accepted_at IS NULL'
 );
 
 const listPendingByOrganizationStmt = db.prepare(
-  "SELECT * FROM invitations WHERE organization_id = ? AND accepted_at IS NULL ORDER BY created_at DESC",
+  'SELECT * FROM invitations WHERE organization_id = ? AND accepted_at IS NULL ORDER BY created_at DESC'
 );
 
 const markAcceptedStmt = db.prepare(
-  "UPDATE invitations SET accepted_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ?",
+  "UPDATE invitations SET accepted_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ?"
 );
 
 export const invitationsRepository = {
@@ -40,10 +40,11 @@ export const invitationsRepository = {
 
   findPendingByOrganizationAndEmail(
     organizationId: number,
-    email: string,
+    email: string
   ): Invitation | undefined {
     return findPendingByOrgAndEmailStmt.get(organizationId, email) as
-      Invitation | undefined;
+      | Invitation
+      | undefined;
   },
 
   listPendingByOrganization(organizationId: number): Invitation[] {
@@ -52,5 +53,5 @@ export const invitationsRepository = {
 
   markAccepted(id: number): void {
     markAcceptedStmt.run(id);
-  },
+  }
 };

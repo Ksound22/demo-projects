@@ -1,6 +1,6 @@
-import type { OrganizationRole } from "../models/organization-member.model.js";
-import type { TaskPriority, TaskStatus } from "../models/task.model.js";
-import { analyticsRepository } from "../repositories/analytics.repository.js";
+import type { OrganizationRole } from '../models/organization-member.model.js';
+import type { TaskPriority, TaskStatus } from '../models/task.model.js';
+import { analyticsRepository } from '../repositories/analytics.repository.js';
 
 export interface WeeklyCount {
   weekStart: string;
@@ -17,13 +17,13 @@ export interface AnalyticsResults {
 }
 
 const ALL_STATUSES: TaskStatus[] = [
-  "backlog",
-  "todo",
-  "in_progress",
-  "in_review",
-  "done",
+  'backlog',
+  'todo',
+  'in_progress',
+  'in_review',
+  'done'
 ];
-const ALL_PRIORITIES: TaskPriority[] = ["low", "medium", "high", "urgent"];
+const ALL_PRIORITIES: TaskPriority[] = ['low', 'medium', 'high', 'urgent'];
 
 const WEEKS_OF_HISTORY = 8;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
@@ -33,7 +33,7 @@ const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 // ambiguity). Exported for a focused unit test on the date math itself.
 export function bucketByWeek(
   timestamps: string[],
-  now: number = Date.now(),
+  now: number = Date.now()
 ): WeeklyCount[] {
   const buckets = Array.from({ length: WEEKS_OF_HISTORY }, (_, i) => {
     const periodsAgo = WEEKS_OF_HISTORY - 1 - i;
@@ -55,30 +55,30 @@ export const analyticsService = {
   getAnalytics(
     organizationId: number,
     userId: number,
-    role: OrganizationRole,
+    role: OrganizationRole
   ): AnalyticsResults {
-    const isOrgManager = role === "owner" || role === "admin";
+    const isOrgManager = role === 'owner' || role === 'admin';
     const now = Date.now();
     const since = new Date(now - WEEKS_OF_HISTORY * WEEK_MS).toISOString();
 
     const tasksByStatus = Object.fromEntries(
-      ALL_STATUSES.map((status) => [status, 0]),
+      ALL_STATUSES.map(status => [status, 0])
     ) as Record<TaskStatus, number>;
     for (const row of analyticsRepository.taskStatusCounts(
       organizationId,
       userId,
-      isOrgManager,
+      isOrgManager
     )) {
       tasksByStatus[row.status] = row.count;
     }
 
     const tasksByPriority = Object.fromEntries(
-      ALL_PRIORITIES.map((priority) => [priority, 0]),
+      ALL_PRIORITIES.map(priority => [priority, 0])
     ) as Record<TaskPriority, number>;
     for (const row of analyticsRepository.taskPriorityCounts(
       organizationId,
       userId,
-      isOrgManager,
+      isOrgManager
     )) {
       tasksByPriority[row.priority] = row.count;
     }
@@ -88,39 +88,39 @@ export const analyticsService = {
         organizationId,
         userId,
         since,
-        isOrgManager,
+        isOrgManager
       ),
-      now,
+      now
     );
     const activityOverTime = bucketByWeek(
       analyticsRepository.activityTimestamps(
         organizationId,
         userId,
         since,
-        isOrgManager,
+        isOrgManager
       ),
-      now,
+      now
     );
 
     const overdue = analyticsRepository.overdueSplit(
       organizationId,
       userId,
       new Date(now).toISOString(),
-      isOrgManager,
+      isOrgManager
     );
     const overdueVsOnTrack = {
       overdue: overdue.matched ?? 0,
-      onTrack: overdue.total - (overdue.matched ?? 0),
+      onTrack: overdue.total - (overdue.matched ?? 0)
     };
 
     const subtasks = analyticsRepository.subtaskCompletionSplit(
       organizationId,
       userId,
-      isOrgManager,
+      isOrgManager
     );
     const subtaskCompletionRate = {
       completed: subtasks.matched ?? 0,
-      remaining: subtasks.total - (subtasks.matched ?? 0),
+      remaining: subtasks.total - (subtasks.matched ?? 0)
     };
 
     return {
@@ -129,7 +129,7 @@ export const analyticsService = {
       completionsOverTime,
       activityOverTime,
       overdueVsOnTrack,
-      subtaskCompletionRate,
+      subtaskCompletionRate
     };
-  },
+  }
 };

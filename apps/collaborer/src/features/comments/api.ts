@@ -1,10 +1,10 @@
-import { apiFetch, type PaginatedResult } from "../../lib/api/client.js";
-import type { Comment } from "./types.js";
+import { apiFetch, type PaginatedResult } from '../../lib/api/client.js';
+import type { Comment } from './types.js';
 
 export const commentsApi = {
   listForTask(taskId: number, page = 1): Promise<PaginatedResult<Comment>> {
     return apiFetch<PaginatedResult<Comment>>(
-      `/tasks/${taskId}/comments?page=${page}`,
+      `/tasks/${taskId}/comments?page=${page}`
     );
   },
 
@@ -12,9 +12,9 @@ export const commentsApi = {
     const { data } = await apiFetch<{ data: Comment }>(
       `/tasks/${taskId}/comments`,
       {
-        method: "POST",
-        body: { body },
-      },
+        method: 'POST',
+        body: { body }
+      }
     );
     return data;
   },
@@ -22,12 +22,12 @@ export const commentsApi = {
   async update(commentId: number, body: string): Promise<Comment> {
     const { data } = await apiFetch<{ data: Comment }>(
       `/comments/${commentId}`,
-      { method: "PATCH", body: { body } },
+      { method: 'PATCH', body: { body } }
     );
     return data;
   },
 
   remove(commentId: number): Promise<void> {
-    return apiFetch<void>(`/comments/${commentId}`, { method: "DELETE" });
-  },
+    return apiFetch<void>(`/comments/${commentId}`, { method: 'DELETE' });
+  }
 };

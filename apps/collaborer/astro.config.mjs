@@ -1,8 +1,8 @@
 // @ts-check
-import { defineConfig, fontProviders } from "astro/config";
+import { defineConfig, fontProviders } from 'astro/config';
 
-import node from "@astrojs/node";
-import react from "@astrojs/react";
+import node from '@astrojs/node';
+import react from '@astrojs/react';
 
 // Server output (not static): every page's actual content is fetched
 // client-side from the API regardless, but dynamic routes like tasks/[id]
@@ -15,15 +15,15 @@ import react from "@astrojs/react";
 // deploy target expects one process on one port, not two.
 // https://astro.build/config
 export default defineConfig({
-  output: "server",
-  adapter: node({ mode: "middleware" }),
+  output: 'server',
+  adapter: node({ mode: 'middleware' }),
   integrations: [react()],
   fonts: [
     {
       provider: fontProviders.google(),
-      name: "Lato",
-      cssVariable: "--font-lato",
-      weights: [400, 700],
+      name: 'Lato',
+      cssVariable: '--font-lato',
+      weights: [400, 700]
     },
     {
       // Self-hosted rather than fetched from Google: Hack isn't a Google Fonts
@@ -31,27 +31,27 @@ export default defineConfig({
       // src/assets/fonts/HACK-LICENSE.md) — see the command-line-chic design
       // skill's approved type stack (Hack-ZeroSlash for code/mono content).
       provider: fontProviders.local(),
-      name: "Hack",
-      cssVariable: "--font-hack",
+      name: 'Hack',
+      cssVariable: '--font-hack',
       options: {
         variants: [
           {
             weight: 400,
-            style: "normal",
-            src: ["./src/assets/fonts/hack-regular.woff2"],
+            style: 'normal',
+            src: ['./src/assets/fonts/hack-regular.woff2']
           },
           {
             weight: 700,
-            style: "normal",
-            src: ["./src/assets/fonts/hack-bold.woff2"],
-          },
-        ],
-      },
-    },
+            style: 'normal',
+            src: ['./src/assets/fonts/hack-bold.woff2']
+          }
+        ]
+      }
+    }
   ],
   prefetch: {
     // 'viewport' is quite an aggressive strategy.  'hover' could suffice, but we need to experiment.
-    defaultStrategy: "viewport",
-    prefetchAll: true,
-  },
+    defaultStrategy: 'viewport',
+    prefetchAll: true
+  }
 });

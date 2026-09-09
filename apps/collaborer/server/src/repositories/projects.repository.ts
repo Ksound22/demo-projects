@@ -1,15 +1,15 @@
-import { db } from "../db/index.js";
-import type { Project, ProjectStatus } from "../models/project.model.js";
+import { db } from '../db/index.js';
+import type { Project, ProjectStatus } from '../models/project.model.js';
 
 const insertStmt = db.prepare(`
   INSERT INTO projects (organization_id, name, description, status, created_by)
   VALUES (@organizationId, @name, @description, @status, @createdBy)
 `);
 
-const findByIdStmt = db.prepare("SELECT * FROM projects WHERE id = ?");
+const findByIdStmt = db.prepare('SELECT * FROM projects WHERE id = ?');
 
 const listByOrganizationStmt = db.prepare(
-  "SELECT * FROM projects WHERE organization_id = ? ORDER BY created_at DESC",
+  'SELECT * FROM projects WHERE organization_id = ? ORDER BY created_at DESC'
 );
 
 const listForMemberStmt = db.prepare(`
@@ -25,7 +25,7 @@ const updateStmt = db.prepare(`
   WHERE id = @id
 `);
 
-const deleteStmt = db.prepare("DELETE FROM projects WHERE id = ?");
+const deleteStmt = db.prepare('DELETE FROM projects WHERE id = ?');
 
 export const projectsRepository = {
   create(input: {
@@ -53,7 +53,7 @@ export const projectsRepository = {
 
   update(
     id: number,
-    input: { name: string; description: string | null; status: ProjectStatus },
+    input: { name: string; description: string | null; status: ProjectStatus }
   ): Project {
     updateStmt.run({ id, ...input });
     return findByIdStmt.get(id) as Project;
@@ -61,5 +61,5 @@ export const projectsRepository = {
 
   remove(id: number): void {
     deleteStmt.run(id);
-  },
+  }
 };

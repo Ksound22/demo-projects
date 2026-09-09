@@ -1,4 +1,4 @@
-import "./pie-chart.css";
+import './pie-chart.css';
 
 export type PieChartSlice = {
   label: string;
@@ -27,7 +27,7 @@ function polarToCartesian(angleDeg: number): { x: number; y: number } {
   const angleRad = ((angleDeg - 90) * Math.PI) / 180;
   return {
     x: CENTER + RADIUS * Math.cos(angleRad),
-    y: CENTER + RADIUS * Math.sin(angleRad),
+    y: CENTER + RADIUS * Math.sin(angleRad)
   };
 }
 
@@ -44,7 +44,7 @@ export function PieChart({ data, hollow = false, ariaLabel }: PieChartProps) {
   const total = data.reduce((sum, slice) => sum + slice.value, 0);
 
   let cumulativeAngle = 0;
-  const slices = data.map((slice) => {
+  const slices = data.map(slice => {
     const angle = total > 0 ? (slice.value / total) * 360 : 0;
     const startAngle = cumulativeAngle;
     cumulativeAngle += angle;
@@ -52,27 +52,27 @@ export function PieChart({ data, hollow = false, ariaLabel }: PieChartProps) {
       ...slice,
       startAngle,
       endAngle: cumulativeAngle,
-      percent: total > 0 ? Math.round((slice.value / total) * 100) : 0,
+      percent: total > 0 ? Math.round((slice.value / total) * 100) : 0
     };
   });
 
   return (
-    <div className="pie-chart">
+    <div className='pie-chart'>
       <svg
         viewBox={`0 0 ${SIZE} ${SIZE}`}
-        role="img"
+        role='img'
         aria-label={ariaLabel}
-        className="pie-chart-svg"
+        className='pie-chart-svg'
       >
         {total === 0 ? (
           <circle
             cx={CENTER}
             cy={CENTER}
             r={RADIUS}
-            className="pie-chart-empty"
+            className='pie-chart-empty'
           />
         ) : (
-          slices.map((slice) => {
+          slices.map(slice => {
             if (slice.value === 0) return null;
             // A slice covering the full circle degenerates in the arc-path
             // formula (its start and end points coincide) — draw a plain
@@ -106,18 +106,18 @@ export function PieChart({ data, hollow = false, ariaLabel }: PieChartProps) {
             cx={CENTER}
             cy={CENTER}
             r={HOLE_RADIUS}
-            className="pie-chart-hole"
+            className='pie-chart-hole'
           />
         )}
       </svg>
 
-      <ul className="pie-chart-legend">
-        {slices.map((slice) => (
+      <ul className='pie-chart-legend'>
+        {slices.map(slice => (
           <li key={slice.label}>
             <span
-              className="pie-chart-swatch"
+              className='pie-chart-swatch'
               style={{ backgroundColor: slice.color }}
-              aria-hidden="true"
+              aria-hidden='true'
             />
             {slice.label}: {slice.value} ({slice.percent}%)
           </li>

@@ -1,6 +1,6 @@
-import type { Request, Response } from "express";
-import { searchService } from "../services/search.service.js";
-import { searchQuerySchema } from "../validators/search.validator.js";
+import type { Request, Response } from 'express';
+import { searchService } from '../services/search.service.js';
+import { searchQuerySchema } from '../validators/search.validator.js';
 
 export const searchController = {
   search(req: Request, res: Response): void {
@@ -10,8 +10,8 @@ export const searchController = {
       req.user!.id,
       req.organizationRole!,
       q,
-      type,
+      type
     );
     res.json({ data: results });
-  },
+  }
 };

@@ -1,5 +1,5 @@
-import { app } from "./app.js";
-import { attachWebSocketServer } from "./websocket/server.js";
+import { app } from './app.js';
+import { attachWebSocketServer } from './websocket/server.js';
 
 const port = Number(process.env.PORT) || 4000;
 

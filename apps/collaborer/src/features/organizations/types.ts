@@ -1,5 +1,5 @@
-export type OrganizationRole = "owner" | "admin" | "member";
-export type InvitationRole = "admin" | "member";
+export type OrganizationRole = 'owner' | 'admin' | 'member';
+export type InvitationRole = 'admin' | 'member';
 
 export interface Organization {
   id: number;

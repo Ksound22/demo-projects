@@ -1,11 +1,11 @@
-import "./kanban.css";
-import { useDraggable } from "@dnd-kit/core";
+import './kanban.css';
+import { useDraggable } from '@dnd-kit/core';
 import {
   formatDate,
   formatEnumLabel,
-  isOverdue,
-} from "../../../lib/utils/format.js";
-import type { TaskListItem } from "../types.js";
+  isOverdue
+} from '../../../lib/utils/format.js';
+import type { TaskListItem } from '../types.js';
 
 type TaskCardProps = {
   task: TaskListItem;
@@ -14,15 +14,17 @@ type TaskCardProps = {
 function TaskCardBody({ task }: TaskCardProps) {
   return (
     <>
-      <div className="task-card-title">{task.title}</div>
+      <div className='task-card-title'>{task.title}</div>
 
-      <div className="task-card-meta">
+      <div className='task-card-meta'>
         <span className={`badge badge-priority-${task.priority}`}>
           {formatEnumLabel(task.priority)}
         </span>
         {task.due_date && (
           <span
-            className={`badge ${isOverdue(task.due_date) ? "badge-danger" : "badge-neutral"}`}
+            className={`badge ${
+              isOverdue(task.due_date) ? 'badge-danger' : 'badge-neutral'
+            }`}
           >
             {formatDate(task.due_date)}
           </span>
@@ -30,11 +32,11 @@ function TaskCardBody({ task }: TaskCardProps) {
       </div>
 
       {task.labels.length > 0 && (
-        <div className="task-card-labels">
-          {task.labels.map((label) => (
+        <div className='task-card-labels'>
+          {task.labels.map(label => (
             <span
               key={label.id}
-              className="task-label"
+              className='task-label'
               style={{ backgroundColor: label.color }}
             >
               {label.name}
@@ -43,11 +45,11 @@ function TaskCardBody({ task }: TaskCardProps) {
         </div>
       )}
 
-      <div className="task-card-footer">
+      <div className='task-card-footer'>
         <span>
           {task.subtask_total > 0
             ? `${task.subtask_completed}/${task.subtask_total} subtasks`
-            : ""}
+            : ''}
         </span>
         {task.assignee_name && <span>{task.assignee_name}</span>}
       </div>
@@ -76,7 +78,7 @@ export function TaskCard({ task }: TaskCardProps) {
       href={`/tasks/${task.id}`}
       ref={setNodeRef}
       {...dragListeners}
-      className={`task-card${isDragging ? " task-card-dragging" : ""}`}
+      className={`task-card${isDragging ? ' task-card-dragging' : ''}`}
     >
       <TaskCardBody task={task} />
     </a>
@@ -88,7 +90,7 @@ export function TaskCard({ task }: TaskCardProps) {
 // not a real link) — it's a visual-only clone of whichever card is active.
 export function TaskCardOverlay({ task }: TaskCardProps) {
   return (
-    <div className="task-card task-card-overlay" aria-hidden="true">
+    <div className='task-card task-card-overlay' aria-hidden='true'>
       <TaskCardBody task={task} />
     </div>
   );

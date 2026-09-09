@@ -1,4 +1,4 @@
-import rateLimit from "express-rate-limit";
+import rateLimit from 'express-rate-limit';
 
 export const authRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -7,8 +7,8 @@ export const authRateLimit = rateLimit({
   legacyHeaders: false,
   message: {
     error: {
-      code: "TOO_MANY_REQUESTS",
-      message: "Too many attempts. Please try again later.",
-    },
-  },
+      code: 'TOO_MANY_REQUESTS',
+      message: 'Too many attempts. Please try again later.'
+    }
+  }
 });

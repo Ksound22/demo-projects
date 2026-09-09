@@ -1,13 +1,13 @@
-import { db } from "../db/index.js";
+import { db } from '../db/index.js';
 
 const existsStmt = db.prepare(
-  "SELECT 1 FROM task_labels WHERE task_id = ? AND label_id = ?",
+  'SELECT 1 FROM task_labels WHERE task_id = ? AND label_id = ?'
 );
 const attachStmt = db.prepare(
-  "INSERT INTO task_labels (task_id, label_id) VALUES (?, ?)",
+  'INSERT INTO task_labels (task_id, label_id) VALUES (?, ?)'
 );
 const detachStmt = db.prepare(
-  "DELETE FROM task_labels WHERE task_id = ? AND label_id = ?",
+  'DELETE FROM task_labels WHERE task_id = ? AND label_id = ?'
 );
 
 export const taskLabelsRepository = {
@@ -21,5 +21,5 @@ export const taskLabelsRepository = {
 
   detach(taskId: number, labelId: number): void {
     detachStmt.run(taskId, labelId);
-  },
+  }
 };

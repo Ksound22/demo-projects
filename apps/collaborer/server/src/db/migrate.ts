@@ -1,11 +1,11 @@
-import { readdirSync, readFileSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
-import type Database from "better-sqlite3";
-import { db } from "./index.js";
+import { readdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import type Database from 'better-sqlite3';
+import { db } from './index.js';
 
 const migrationsDir = fileURLToPath(
-  new URL("../../db/migrations", import.meta.url),
+  new URL('../../db/migrations', import.meta.url)
 );
 
 function ensureMigrationsTable(database: Database.Database): void {
@@ -22,7 +22,7 @@ function ensureMigrationsTable(database: Database.Database): void {
 // way — a test DB is only trustworthy if it's schema-identical to the real one.
 export function runMigrations(
   database: Database.Database,
-  options: { silent?: boolean } = {},
+  options: { silent?: boolean } = {}
 ): void {
   const log = options.silent ? () => {} : console.log;
 
@@ -30,24 +30,24 @@ export function runMigrations(
 
   const applied = new Set(
     (
-      database.prepare("SELECT name FROM schema_migrations").all() as {
+      database.prepare('SELECT name FROM schema_migrations').all() as {
         name: string;
       }[]
-    ).map((row) => row.name),
+    ).map(row => row.name)
   );
 
   const files = readdirSync(migrationsDir)
-    .filter((file) => file.endsWith(".sql"))
+    .filter(file => file.endsWith('.sql'))
     .sort();
 
   const recordMigration = database.prepare(
-    "INSERT INTO schema_migrations (name) VALUES (?)",
+    'INSERT INTO schema_migrations (name) VALUES (?)'
   );
 
   for (const file of files) {
     if (applied.has(file)) continue;
 
-    const sql = readFileSync(path.join(migrationsDir, file), "utf8");
+    const sql = readFileSync(path.join(migrationsDir, file), 'utf8');
 
     database.transaction(() => {
       database.exec(sql);
@@ -57,11 +57,11 @@ export function runMigrations(
     log(`Applied migration: ${file}`);
   }
 
-  log("Migrations up to date.");
+  log('Migrations up to date.');
 }
 
 // Only run as a side effect when this file is executed directly (`pnpm --filter
 // server migrate`), not when imported by tests.
-if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   runMigrations(db);
 }

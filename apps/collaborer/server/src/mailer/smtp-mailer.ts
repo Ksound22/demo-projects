@@ -1,6 +1,6 @@
-import nodemailer from "nodemailer";
-import { env } from "../config/env.js";
-import type { Mailer, MailMessage } from "./types.js";
+import nodemailer from 'nodemailer';
+import { env } from '../config/env.js';
+import type { Mailer, MailMessage } from './types.js';
 
 // Only constructed when SMTP_HOST is set — see mailer/index.ts.
 const transport = nodemailer.createTransport({
@@ -10,7 +10,7 @@ const transport = nodemailer.createTransport({
   auth:
     env.SMTP_USER && env.SMTP_PASSWORD
       ? { user: env.SMTP_USER, pass: env.SMTP_PASSWORD }
-      : undefined,
+      : undefined
 });
 
 export const smtpMailer: Mailer = {
@@ -20,7 +20,7 @@ export const smtpMailer: Mailer = {
       to: message.to,
       subject: message.subject,
       text: message.text,
-      html: message.html,
+      html: message.html
     });
-  },
+  }
 };

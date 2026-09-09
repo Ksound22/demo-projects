@@ -1,13 +1,13 @@
 import type {
   Notification,
-  NotificationType,
-} from "../models/notification.model.js";
-import { notificationsRepository } from "../repositories/notifications.repository.js";
-import { NotFoundError } from "../utils/errors.js";
+  NotificationType
+} from '../models/notification.model.js';
+import { notificationsRepository } from '../repositories/notifications.repository.js';
+import { NotFoundError } from '../utils/errors.js';
 import {
   buildPaginatedResult,
-  type PaginationParams,
-} from "../utils/pagination.js";
+  type PaginationParams
+} from '../utils/pagination.js';
 
 export const notificationsService = {
   // Called by other services as a side effect of the action that triggered it
@@ -15,7 +15,7 @@ export const notificationsService = {
   notify(
     userId: number,
     type: NotificationType,
-    data: Record<string, unknown>,
+    data: Record<string, unknown>
   ): Notification {
     return notificationsRepository.create(userId, type, data);
   },
@@ -24,7 +24,7 @@ export const notificationsService = {
     const notifications = notificationsRepository.list(
       userId,
       pagination.limit,
-      pagination.offset,
+      pagination.offset
     );
     const total = notificationsRepository.count(userId);
     return buildPaginatedResult(notifications, total, pagination);
@@ -37,13 +37,13 @@ export const notificationsService = {
   markRead(id: number, userId: number): void {
     if (!notificationsRepository.markRead(id, userId)) {
       throw new NotFoundError(
-        "NOTIFICATION_NOT_FOUND",
-        "Notification not found.",
+        'NOTIFICATION_NOT_FOUND',
+        'Notification not found.'
       );
     }
   },
 
   markAllRead(userId: number): void {
     notificationsRepository.markAllRead(userId);
-  },
+  }
 };

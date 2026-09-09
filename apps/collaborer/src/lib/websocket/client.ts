@@ -1,5 +1,5 @@
 export interface ProjectSocketEvent {
-  type: "task.updated" | "comment.created";
+  type: 'task.updated' | 'comment.created';
   data: unknown;
 }
 
@@ -19,7 +19,7 @@ const RECONNECT_MAX_DELAY_MS = 15000;
 function getWebSocketBaseUrl(): string {
   const configured = import.meta.env.PUBLIC_WEBSOCKET_URL as string | undefined;
   if (configured) return configured;
-  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   return `${protocol}//${window.location.host}`;
 }
 
@@ -56,12 +56,12 @@ export class ProjectSocket {
     const socket = new WebSocket(url);
     this.socket = socket;
 
-    socket.addEventListener("open", () => {
+    socket.addEventListener('open', () => {
       this.reconnectAttempt = 0;
       this.handlers.onReconnect?.();
     });
 
-    socket.addEventListener("message", (event) => {
+    socket.addEventListener('message', event => {
       try {
         const parsed = JSON.parse(event.data as string) as ProjectSocketEvent;
         this.handlers.onEvent?.(parsed);
@@ -70,12 +70,12 @@ export class ProjectSocket {
       }
     });
 
-    socket.addEventListener("close", () => {
+    socket.addEventListener('close', () => {
       if (this.closedByCaller) return;
       this.scheduleReconnect();
     });
 
-    socket.addEventListener("error", (error) => {
+    socket.addEventListener('error', error => {
       this.handlers.onError?.(error);
     });
   }
@@ -83,7 +83,7 @@ export class ProjectSocket {
   private scheduleReconnect(): void {
     const delay = Math.min(
       RECONNECT_BASE_DELAY_MS * 2 ** this.reconnectAttempt,
-      RECONNECT_MAX_DELAY_MS,
+      RECONNECT_MAX_DELAY_MS
     );
     this.reconnectAttempt += 1;
     this.reconnectTimer = setTimeout(() => this.open(), delay);

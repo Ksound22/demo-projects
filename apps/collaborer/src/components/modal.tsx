@@ -1,5 +1,5 @@
-import "./modal.css";
-import { useEffect, useRef, type ReactNode } from "react";
+import './modal.css';
+import { useEffect, useRef, type ReactNode } from 'react';
 
 type ModalProps = {
   open: boolean;
@@ -23,23 +23,23 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
   return (
     <dialog
       ref={ref}
-      className="modal"
-      aria-labelledby="modal-title"
+      className='modal'
+      aria-labelledby='modal-title'
       onClose={onClose}
       onCancel={onClose}
     >
-      <div className="modal-header">
-        <h2 id="modal-title">{title}</h2>
+      <div className='modal-header'>
+        <h2 id='modal-title'>{title}</h2>
         <button
-          type="button"
-          className="modal-close"
+          type='button'
+          className='modal-close'
           onClick={onClose}
-          aria-label="Close"
+          aria-label='Close'
         >
           ×
         </button>
       </div>
-      <div className="modal-body">{children}</div>
+      <div className='modal-body'>{children}</div>
     </dialog>
   );
 }

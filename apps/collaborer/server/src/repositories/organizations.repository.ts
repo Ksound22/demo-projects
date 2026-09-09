@@ -1,13 +1,13 @@
-import { db } from "../db/index.js";
-import type { Organization } from "../models/organization.model.js";
+import { db } from '../db/index.js';
+import type { Organization } from '../models/organization.model.js';
 
 const insertOrganizationStmt = db.prepare(
-  "INSERT INTO organizations (name, description, owner_id) VALUES (@name, @description, @ownerId)",
+  'INSERT INTO organizations (name, description, owner_id) VALUES (@name, @description, @ownerId)'
 );
 const addOwnerMembershipStmt = db.prepare(
-  "INSERT INTO organization_members (organization_id, user_id, role) VALUES (?, ?, 'owner')",
+  "INSERT INTO organization_members (organization_id, user_id, role) VALUES (?, ?, 'owner')"
 );
-const findByIdStmt = db.prepare("SELECT * FROM organizations WHERE id = ?");
+const findByIdStmt = db.prepare('SELECT * FROM organizations WHERE id = ?');
 const listForUserStmt = db.prepare(`
   SELECT o.* FROM organizations o
   JOIN organization_members om ON om.organization_id = o.id
@@ -20,9 +20,9 @@ const updateStmt = db.prepare(`
   WHERE id = @id
 `);
 const updateOwnerStmt = db.prepare(
-  "UPDATE organizations SET owner_id = ? WHERE id = ?",
+  'UPDATE organizations SET owner_id = ? WHERE id = ?'
 );
-const deleteStmt = db.prepare("DELETE FROM organizations WHERE id = ?");
+const deleteStmt = db.prepare('DELETE FROM organizations WHERE id = ?');
 
 export const organizationsRepository = {
   createWithOwner(input: {
@@ -48,7 +48,7 @@ export const organizationsRepository = {
 
   update(
     id: number,
-    input: { name: string; description: string | null; logoUrl: string | null },
+    input: { name: string; description: string | null; logoUrl: string | null }
   ): Organization {
     updateStmt.run({ id, ...input });
     return findByIdStmt.get(id) as Organization;
@@ -60,5 +60,5 @@ export const organizationsRepository = {
 
   remove(id: number): void {
     deleteStmt.run(id);
-  },
+  }
 };
