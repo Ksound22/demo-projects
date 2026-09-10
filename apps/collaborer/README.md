@@ -4,10 +4,6 @@ A full-stack project management and collaboration platform: organizations,
 projects, a Kanban board, tasks with subtasks/labels/comments/attachments,
 notifications, and real-time updates over WebSockets.
 
-For the full architecture and data model, read the
-[Architecture Essentials doc](AGENT-DOCS/COLLABORER%20%E2%80%94%20Architecture%20Essentials.md)
-in `AGENT-DOCS/` before making non-trivial changes.
-
 ## Stack
 
 - **Frontend** (`/`): Astro + React + TypeScript, styled with a hand-built
@@ -107,4 +103,3 @@ multi-stage build used to produce the deployed image.
   `repositories/`, plus `models/`, `middleware/`, `websocket/`.
 - `server/db/migrations/`: versioned SQL migrations, run via
   `pnpm --filter server migrate`.
-- `AGENT-DOCS/`: architecture, PRD, and planning docs.
